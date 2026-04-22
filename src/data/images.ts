@@ -1,0 +1,41 @@
+export const productImages = [
+  "https://images.unsplash.com/photo-1558171813-4c088753af8f?w=400&h=600&fit=crop",
+  "https://images.unsplash.com/photo-1581783898377-1c85bf937427?w=400&h=600&fit=crop",
+  "https://images.unsplash.com/photo-1534126416832-a88fdf2911c2?w=400&h=600&fit=crop",
+  "https://images.unsplash.com/photo-1503342394128-c104d54dba01?w=400&h=600&fit=crop",
+  "https://images.unsplash.com/photo-1558171813-4c088753af8f?w=400&h=600&fit=crop&q=90",
+  "https://images.unsplash.com/photo-1581783898377-1c85bf937427?w=400&h=600&fit=crop&q=90",
+  "https://images.unsplash.com/photo-1534126416832-a88fdf2911c2?w=400&h=600&fit=crop&q=90",
+  "https://images.unsplash.com/photo-1503342394128-c104d54dba01?w=400&h=600&fit=crop&q=90",
+  "https://images.unsplash.com/photo-1558171813-4c088753af8f?w=400&h=600&fit=crop&q=85",
+  "https://images.unsplash.com/photo-1581783898377-1c85bf937427?w=400&h=600&fit=crop&q=85",
+  "https://images.unsplash.com/photo-1534126416832-a88fdf2911c2?w=400&h=600&fit=crop&q=85",
+  "https://images.unsplash.com/photo-1503342394128-c104d54dba01?w=400&h=600&fit=crop&q=85",
+];
+
+export const quizOptionImages = [
+  [
+    "https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=500&h=350&fit=crop",
+    "https://images.unsplash.com/photo-1518622358385-8ea7d0794bf6?w=500&h=350&fit=crop",
+  ],
+  [
+    "https://images.unsplash.com/photo-1550639525-c97d455acf70?w=500&h=350&fit=crop",
+    "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=500&h=350&fit=crop",
+  ],
+  [
+    "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&h=350&fit=crop",
+    "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500&h=350&fit=crop",
+  ],
+  [
+    "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=500&h=350&fit=crop",
+    "https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?w=500&h=350&fit=crop",
+  ],
+  [
+    "https://images.unsplash.com/photo-1539533113208-f6df8cc8b543?w=500&h=350&fit=crop",
+    "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=500&h=350&fit=crop",
+  ],
+  [
+    "https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=500&h=350&fit=crop",
+    "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=500&h=350&fit=crop",
+  ],
+];

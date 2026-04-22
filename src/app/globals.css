@@ -1,26 +1,173 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-cream: #f5f0eb;
+  --color-warm-white: #faf8f5;
+  --color-beige: #e8e0d5;
+  --color-black: #1a1a1a;
+  --color-dark: #2d2926;
+  --color-gray: #8a8580;
+  --color-light-gray: #c4beb8;
+  --color-red: #9B1B30;
+  --color-deep-red: #7a1526;
+  --font-body: 'Helvetica Neue', 'Helvetica', -apple-system, sans-serif;
+  --font-accent: var(--font-playfair);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-cream: var(--color-cream);
+  --color-warm-white: var(--color-warm-white);
+  --color-beige: var(--color-beige);
+  --color-black: var(--color-black);
+  --color-dark: var(--color-dark);
+  --color-gray: var(--color-gray);
+  --color-light-gray: var(--color-light-gray);
+  --color-red: var(--color-red);
+  --color-deep-red: var(--color-deep-red);
+  --font-body: var(--font-body);
+  --font-accent: var(--font-playfair);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-cream);
+  color: var(--color-black);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-red);
+  color: #fff;
+}
+
+.font-accent {
+  font-family: var(--font-accent), 'Playfair Display', 'Georgia', serif;
+}
+
+.editorial-heading {
+  font-family: var(--font-accent), 'Playfair Display', 'Georgia', serif;
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+
+.editorial-heading em,
+.editorial-heading i {
+  font-style: italic;
+  color: var(--color-red);
+}
+
+.tracking-editorial {
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-5%, -10%); }
+  30% { transform: translate(3%, -15%); }
+  50% { transform: translate(-10%, 5%); }
+  70% { transform: translate(8%, 10%); }
+  90% { transform: translate(-3%, 8%); }
+}
+
+.noise-overlay::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  animation: grain 8s steps(10) infinite;
+  z-index: 1;
+}
+
+.magazine-page {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+.magazine-page-back {
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.float-animation {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,255,255,0.08) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+.quiz-option {
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.quiz-option:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+}
+
+.product-card {
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.06);
+}
+
+.product-card:hover .product-image {
+  transform: scale(1.03);
+}
+
+.product-image {
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.line-reveal {
+  background: linear-gradient(var(--color-black), var(--color-black)) no-repeat;
+  background-size: 0% 1px;
+  background-position: left bottom;
+  transition: background-size 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.line-reveal:hover {
+  background-size: 100% 1px;
+}
+
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-red);
+  cursor: pointer;
 }
