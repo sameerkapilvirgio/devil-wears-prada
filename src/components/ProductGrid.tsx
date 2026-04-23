@@ -115,8 +115,9 @@ export default function ProductGrid() {
       style={{ background: "#f5f5f5" }}
     >
       <div className="flex items-end justify-between px-5 md:px-12 lg:px-16 mb-6 md:mb-8" style={{ maxWidth: 1400, marginLeft: "auto", marginRight: "auto" }}>
-        <h2 className="font-accent text-2xl sm:text-3xl md:text-4xl text-[var(--color-black)]">
-          Signature <span className="font-bold italic">Silhouettes</span>
+        <h2 className="text-2xl sm:text-3xl md:text-4xl text-[var(--color-black)]">
+          <span className="font-light tracking-wide" style={{ fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif" }}>Signature</span>{" "}
+          <span className="font-accent font-bold italic">Silhouettes</span>
         </h2>
         <div className="flex items-center gap-2">
           <ArrowButton direction="left" onClick={() => scroll("left")} />

@@ -34,7 +34,7 @@ export default function QuizCTA({ onOpen }: { onOpen: () => void }) {
           </p>
           <button
             onClick={onOpen}
-            className="group inline-flex items-center gap-3 px-10 py-4 bg-[var(--color-red)] text-white tracking-[0.15em] uppercase text-xs md:text-sm cursor-pointer hover:bg-[var(--color-deep-red)] transition-all duration-300"
+            className="group inline-flex items-center gap-3 px-10 py-4 bg-[var(--color-red)] text-white tracking-[0.15em] uppercase text-xs md:text-sm cursor-pointer hover:bg-[var(--color-deep-red)] transition-all duration-300 rounded-xl"
           >
             Take the Quiz
             <svg

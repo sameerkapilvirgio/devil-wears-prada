@@ -73,10 +73,10 @@ export default function MagazineSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative z-10"
+      className="relative"
       style={{ background: "var(--color-cream)" }}
     >
-      <div className="sticky top-0 flex flex-col items-center pt-[6vh] md:pt-[8vh] pb-[6vh]">
+      <div className="sticky top-0 z-10 flex flex-col items-center pt-[6vh] md:pt-[8vh] pb-[6vh]">
         <div className="w-full px-4 md:px-[60px]" style={{ maxWidth: 1100 }}>
           <div className="w-full mx-auto" style={{ maxWidth: 768 }}>
             <div
@@ -233,7 +233,7 @@ export default function MagazineSection() {
         </div>
       </div>
 
-      <div style={{ height: "50vh" }} aria-hidden />
+      <div style={{ height: "20vh" }} aria-hidden />
     </section>
   );
 }

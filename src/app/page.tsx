@@ -34,8 +34,10 @@ export default function Home() {
         variants={fadeUp}
         transition={{ duration: 0.4, ease }}
       >
-        <MoodboardSection onOpenQuiz={() => setQuizOpen(true)} />
+        <MoodboardSection />
       </motion.div>
+
+      <QuizCTA onOpen={() => setQuizOpen(true)} />
 
       <motion.div
         initial="hidden"
@@ -46,18 +48,6 @@ export default function Home() {
       >
         <ProductGrid />
       </motion.div>
-
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-80px" }}
-        variants={fadeUp}
-        transition={{ duration: 0.4, ease }}
-      >
-        <QuizCTA onOpen={() => setQuizOpen(true)} />
-      </motion.div>
-
-      <QuizDrawer isOpen={quizOpen} onClose={() => setQuizOpen(false)} />
 
       {/* Footer */}
       <motion.footer
@@ -151,6 +141,7 @@ export default function Home() {
           </div>
         </div>
       </motion.footer>
+      <QuizDrawer isOpen={quizOpen} onClose={() => setQuizOpen(false)} />
     </main>
   );
 }

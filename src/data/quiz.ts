@@ -17,6 +17,7 @@ export interface QuizResult {
   title: string;
   description: string;
   cta: string;
+  image: string;
 }
 
 export const quizQuestions: QuizQuestion[] = [
@@ -114,6 +115,7 @@ export const quizResults: Record<string, QuizResult> = {
     description:
       "You command the room before you speak. Your wardrobe is a weapon — precise, intentional, devastating. Like Miranda, you don't follow trends. You end them. That's all.",
     cta: "Shop The Miranda Collection",
+    image: "/images/meryl-streep.png",
   },
   protegee: {
     id: "protegee",
@@ -122,6 +124,7 @@ export const quizResults: Record<string, QuizResult> = {
     description:
       "You arrived in a lumpy cerulean sweater and left in Chanel boots. Your style bridges worlds — structure with soul, ambition with authenticity. You can wear the couture and still throw the phone in the fountain.",
     cta: "Shop The Andy Collection",
+    image: "/images/anne-hathaway.png",
   },
   itgirl: {
     id: "itgirl",
@@ -130,6 +133,7 @@ export const quizResults: Record<string, QuizResult> = {
     description:
       "Fashion isn't a hobby — it's your religion. You survived on cubes of cheese for a Runway gown. Bold, fierce, unapologetically dramatic. You'd starve for couture and call it discipline.",
     cta: "Shop The Emily Collection",
+    image: "/images/emily-blunt.png",
   },
   visionary: {
     id: "visionary",
@@ -138,5 +142,6 @@ export const quizResults: Record<string, QuizResult> = {
     description:
       "Effortlessly chic, dangerously ambitious. You play the long game in couture — while everyone watches Miranda, you're already two moves ahead. Paris wasn't a reward. It was always the plan.",
     cta: "Shop The Jacqueline Collection",
+    image: "/images/anne-hathaway.png",
   },
 };

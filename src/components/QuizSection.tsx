@@ -51,14 +51,14 @@ export default function QuizSection() {
   };
 
   return (
-    <div className="pt-2 md:pt-4">
+    <div className="pt-1 md:pt-2">
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
         className="flex flex-row items-center justify-between"
         style={{
-          padding: "8px 16px 16px",
+          padding: "4px 16px 8px",
           maxWidth: 768,
           marginLeft: "auto",
           marginRight: "auto",
@@ -66,16 +66,10 @@ export default function QuizSection() {
       >
         <div>
           <h2
-            className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[var(--color-red)] tracking-wide"
-            style={{ fontFamily: "var(--font-body)" }}
-          >
-            TAKE THE QUIZ
-          </h2>
-          <h2
             className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white tracking-wide"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            FIND YOUR DWP ALTER EGO
+            PICK <span className="text-[var(--color-red)]">YOUR</span> STYLE
           </h2>
         </div>
 
@@ -170,7 +164,7 @@ export default function QuizSection() {
                         <button
                           key={i}
                           onClick={() => handleAnswer(option.value, i)}
-                          className={`quiz-option group text-left border-2 bg-white/[0.02] backdrop-blur-sm cursor-pointer overflow-hidden transition-all duration-300 ${
+                          className={`quiz-option group text-left border-2 bg-white/[0.02] backdrop-blur-sm cursor-pointer overflow-hidden rounded-xl transition-all duration-300 ${
                             selectedOption === i
                               ? "border-white shadow-[0_0_20px_rgba(255,255,255,0.3)]"
                               : "border-white/10 hover:border-[var(--color-red)]/50"
@@ -199,19 +193,6 @@ export default function QuizSection() {
                               />
                             </motion.div>
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                            <div className="absolute bottom-2 left-3 right-3 md:bottom-3 md:left-4 md:right-4">
-                              <div className="tracking-editorial text-white/30 text-[0.45rem] md:text-[0.5rem] mb-0.5">
-                                OPTION {i === 0 ? "A" : "B"}
-                              </div>
-                              <div className="font-accent text-sm md:text-base text-white leading-tight group-hover:text-[var(--color-red)] transition-colors duration-300">
-                                {option.label}
-                              </div>
-                            </div>
-                          </div>
-                          <div style={{ padding: "8px 12px" }}>
-                            <p className="text-white/30 text-[0.65rem] md:text-xs leading-[1.5] line-clamp-2">
-                              {option.description}
-                            </p>
                           </div>
                         </button>
                       ))}
@@ -222,39 +203,54 @@ export default function QuizSection() {
             ) : (
               <motion.div
                 key="result"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 transition={{
                   duration: 0.8,
                   ease: [0.25, 0.46, 0.45, 0.94],
                 }}
-                className="text-center"
                 style={{
                   flex: 1,
                   display: "flex",
                   flexDirection: "column",
-                  justifyContent: "center",
                 }}
               >
-                <div className="tracking-editorial text-white/25 mb-4">
-                  YOUR RESULT
-                </div>
-                <h3 className="font-accent italic text-3xl sm:text-4xl md:text-5xl text-white mb-4">
-                  {result.name}
-                </h3>
-                <p className="text-white/40 text-xs md:text-sm leading-[1.7] max-w-md mx-auto mb-6">
-                  {result.description}
-                </p>
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                  <button className="px-8 py-3 bg-[var(--color-red)] text-white tracking-[0.12em] uppercase text-sm cursor-pointer hover:bg-[var(--color-deep-red)] transition-colors">
-                    {result.cta}
-                  </button>
-                  <button
-                    onClick={resetQuiz}
-                    className="px-6 py-3 border border-white/20 text-white/40 tracking-[0.12em] uppercase text-sm cursor-pointer hover:border-white/40 hover:text-white transition-all duration-300"
+                <div className="flex flex-col items-center text-center">
+                  <div className="relative overflow-hidden rounded-2xl w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 mb-5">
+                    <motion.div
+                      className="relative w-full h-full"
+                      initial={{ scale: 1.1 }}
+                      animate={{ scale: 1 }}
+                      transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                    >
+                      <Image
+                        src={result.image}
+                        alt={result.name}
+                        fill
+                        className="object-cover object-top"
+                        sizes="256px"
+                      />
+                    </motion.div>
+                  </div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.3 }}
                   >
-                    Retake Quiz
-                  </button>
+                    <div className="tracking-editorial text-white/40 text-[0.5rem] mb-2">
+                      YOUR ALTER EGO
+                    </div>
+                    <h3 className="font-accent italic text-2xl sm:text-3xl md:text-4xl text-white leading-[1.1] mb-1">
+                      {result.name}
+                    </h3>
+                    <div className="text-[var(--color-red)] text-xs tracking-[0.15em] uppercase font-bold mb-4">
+                      {result.title}
+                    </div>
+                    <p className="text-white/50 text-xs md:text-sm leading-[1.7] max-w-sm mx-auto mb-5">
+                      {result.description}
+                    </p>
+                  </motion.div>
                 </div>
               </motion.div>
             )}
