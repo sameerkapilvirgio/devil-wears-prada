@@ -8,8 +8,8 @@
   --color-dark: #2d2926;
   --color-gray: #8a8580;
   --color-light-gray: #c4beb8;
-  --color-red: #9B1B30;
-  --color-deep-red: #7a1526;
+  --color-red: #F00D0C;
+  --color-deep-red: #C00A0A;
   --font-body: 'Helvetica Neue', 'Helvetica', -apple-system, sans-serif;
   --font-accent: var(--font-playfair);
 }
@@ -133,22 +133,7 @@ body {
   box-shadow: 0 20px 60px rgba(0,0,0,0.08);
 }
 
-.product-card {
-  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
 
-.product-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 30px 80px rgba(0,0,0,0.06);
-}
-
-.product-card:hover .product-image {
-  transform: scale(1.03);
-}
-
-.product-image {
-  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
 
 .line-reveal {
   background: linear-gradient(var(--color-black), var(--color-black)) no-repeat;
