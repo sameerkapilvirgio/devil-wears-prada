@@ -45,29 +45,16 @@ export default function QuizDrawer({
           />
 
           {/* Mobile: bottom sheet */}
-          <motion.div
-            className="md:hidden absolute inset-x-0 bottom-0 bg-[#1a1a1a] rounded-t-[20px] overflow-hidden flex flex-col"
-            style={{ maxHeight: "92vh" }}
-            initial={{ y: "100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "100%" }}
-            transition={{
-              type: "spring",
-              damping: 28,
-              stiffness: 280,
-              mass: 0.8,
-            }}
-          >
-            <div className="flex-shrink-0 relative flex justify-center pt-3 pb-1">
-              <div className="w-10 h-1 rounded-full bg-white/15" />
+          <div className="md:hidden absolute inset-x-0 bottom-0" style={{ maxHeight: "92vh" }}>
+            <div className="flex justify-end px-4 pb-2">
               <button
                 onClick={onClose}
-                className="absolute top-3 right-4 w-8 h-8 flex items-center justify-center text-white/30 hover:text-white transition-colors cursor-pointer"
+                className="w-8 h-8 flex items-center justify-center text-white hover:text-white/60 transition-colors cursor-pointer"
                 aria-label="Close quiz"
               >
                 <svg
-                  width="18"
-                  height="18"
+                  width="20"
+                  height="20"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -77,11 +64,28 @@ export default function QuizDrawer({
                 </svg>
               </button>
             </div>
+            <motion.div
+              className="bg-[#1a1a1a] rounded-t-[20px] overflow-hidden flex flex-col"
+              style={{ maxHeight: "85vh" }}
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{
+                type: "spring",
+                damping: 28,
+                stiffness: 280,
+                mass: 0.8,
+              }}
+            >
+              <div className="flex-shrink-0 flex justify-center pt-3 pb-1">
+                <div className="w-10 h-1 rounded-full bg-white/15" />
+              </div>
 
-            <div className="flex-1 overflow-y-auto overscroll-contain">
-              <QuizSection />
-            </div>
-          </motion.div>
+              <div className="flex-1 overflow-y-auto overscroll-contain">
+                <QuizSection />
+              </div>
+            </motion.div>
+          </div>
 
           {/* Desktop: centered modal */}
           <motion.div
@@ -91,28 +95,15 @@ export default function QuizDrawer({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <motion.div
-              className="relative bg-[#1a1a1a] rounded-2xl overflow-hidden flex flex-col w-full"
-              style={{ maxWidth: 520, maxHeight: "80vh" }}
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              transition={{
-                type: "spring",
-                damping: 28,
-                stiffness: 300,
-                mass: 0.6,
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
+            <div className="relative" style={{ maxWidth: 520, width: "100%" }} onClick={(e) => e.stopPropagation()}>
               <button
                 onClick={onClose}
-                className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center text-white/30 hover:text-white transition-colors cursor-pointer"
+                className="absolute -top-10 right-0 z-20 w-8 h-8 flex items-center justify-center text-white hover:text-white/60 transition-colors cursor-pointer"
                 aria-label="Close quiz"
               >
                 <svg
-                  width="18"
-                  height="18"
+                  width="20"
+                  height="20"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -122,10 +113,24 @@ export default function QuizDrawer({
                 </svg>
               </button>
 
-              <div className="flex-1 overflow-y-auto overscroll-contain">
-                <QuizSection />
-              </div>
-            </motion.div>
+              <motion.div
+                className="bg-[#1a1a1a] rounded-2xl overflow-hidden flex flex-col w-full"
+                style={{ maxHeight: "80vh" }}
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                transition={{
+                  type: "spring",
+                  damping: 28,
+                  stiffness: 300,
+                  mass: 0.6,
+                }}
+              >
+                <div className="flex-1 overflow-y-auto overscroll-contain">
+                  <QuizSection />
+                </div>
+              </motion.div>
+            </div>
           </motion.div>
         </div>
       )}

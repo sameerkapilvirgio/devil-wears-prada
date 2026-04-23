@@ -61,7 +61,7 @@ const ITEMS: ParallaxItem[] = [
   {
     src: "/images/parallax/pjlZpe.tif.png",
     alt: "Arc de Triomphe",
-    top: "21%", left: "0%", width: "clamp(200px, 26vw, 360px)",
+    top: "18%", left: "0%", width: "clamp(200px, 26vw, 360px)",
     mdTop: "22%", mdLeft: "4%",
     speed: 1, z: 1,
   },
@@ -69,7 +69,7 @@ const ITEMS: ParallaxItem[] = [
     src: "/images/parallax/fOUH83.tif.png",
     alt: "Miranda Priestly",
     top: "30%", left: "0%", width: "clamp(200px, 26vw, 360px)",
-    mdTop: "28%", mdLeft: "20%",
+    mdTop: "28%", mdLeft: "60%",
     speed: 1, z: 3, shadow: true,
   },
   {
@@ -185,25 +185,6 @@ export default function MoodboardSection() {
       className="relative overflow-hidden"
       style={{ background: "var(--color-cream)" }}
     >
-      {/* ── CTA block ── */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
-        className="flex flex-col items-center text-center px-6 pt-10 md:pt-16 pb-10 md:pb-14 relative z-10"
-      >
-        <h2 className="font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-[1.2] text-[var(--color-dark)] max-w-lg mb-4" style={{ fontFamily: "var(--font-body)" }}>
-          Get notified when it drops
-        </h2>
-        <p className="text-[var(--color-gray)] text-sm md:text-base leading-[1.6] max-w-md mb-8">
-          Be the first to shop the collection when it goes live.
-        </p>
-        <button className="bg-black px-12 py-5 rounded-2xl text-white text-lg md:text-xl tracking-[0.02em] cursor-pointer hover:bg-black/85 transition-colors">
-          Join the waitlist
-        </button>
-      </motion.div>
-
       <div style={{ maxWidth: 1400, margin: "0 auto" }}>
         {/* ── Parallax moodboard ── */}
         <div className="relative w-full h-[80vh] sm:h-[85vh] md:h-[90vh] lg:h-[100vh]">

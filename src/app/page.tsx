@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import HeroSection from "@/components/HeroSection";
 import MagazineSection from "@/components/MagazineSection";
 import MoodboardSection from "@/components/MoodboardSection";
+import StorySection from "@/components/StorySection";
 import ProductGrid from "@/components/ProductGrid";
 import QuizCTA from "@/components/QuizCTA";
 import QuizDrawer from "@/components/QuizDrawer";
@@ -26,6 +27,8 @@ export default function Home() {
 
       {/* Magazine — scroll-driven, manages its own sticky + scroll runway */}
       <MagazineSection />
+
+      <StorySection />
 
       <motion.div
         initial="hidden"

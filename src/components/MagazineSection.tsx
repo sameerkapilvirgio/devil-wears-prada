@@ -27,19 +27,31 @@ export default function MagazineSection() {
   });
 
   // ── FLIP 1: Cover slides then flips via two-clip technique (0.12 → 0.40) ──
-  const coverSlideX = useTransform(scrollYProgress, [0.12, 0.25], ["-50%", "0%"]);
+  const coverSlideX = useTransform(scrollYProgress, [0.12, 0.25], ["-25%", "0%"]);
 
   const FLIP1_START = 0.25;
   const FLIP1_END = 0.40;
   const FLIP1_MID = (FLIP1_START + FLIP1_END) / 2;
 
-  // Right clip: cover front, rotates 0→-180, visible first half only
-  const flip1FrontRotate = useTransform(scrollYProgress, [FLIP1_START, FLIP1_END], [0, -180]);
+  // Right clip: cover front, eased rotation (slow start, fast middle, slow end)
+  const flip1FrontRotate = useTransform(
+    scrollYProgress,
+    [FLIP1_START, FLIP1_START + 0.03, FLIP1_MID, FLIP1_END - 0.03, FLIP1_END],
+    [0, -15, -90, -165, -180]
+  );
   const flip1FrontOpacity = useTransform(scrollYProgress, [FLIP1_MID - 0.005, FLIP1_MID + 0.005], [1, 0]);
 
-  // Left clip: page 1 (S1_LEFT), rotates 180→0, visible second half only
-  const flip1BackRotate = useTransform(scrollYProgress, [FLIP1_START, FLIP1_END], [180, 0]);
+  // Left clip: page 1 (S1_LEFT), eased rotation
+  const flip1BackRotate = useTransform(
+    scrollYProgress,
+    [FLIP1_START, FLIP1_START + 0.03, FLIP1_MID, FLIP1_END - 0.03, FLIP1_END],
+    [180, 165, 90, 15, 0]
+  );
   const flip1BackOpacity = useTransform(scrollYProgress, [FLIP1_MID - 0.005, FLIP1_MID + 0.005], [0, 1]);
+
+  // Realism: scale lift + curl shadow (peaks at midpoint)
+  const flip1Scale = useTransform(scrollYProgress, [FLIP1_START, FLIP1_MID, FLIP1_END], [1, 1.03, 1]);
+  const flip1ShadowOpacity = useTransform(scrollYProgress, [FLIP1_START, FLIP1_MID, FLIP1_END], [0, 0.35, 0]);
 
   // Flipper appears when slide ends, fades out when flip lands
   const flip1Show = useTransform(scrollYProgress, [0.24, 0.25, 0.38, 0.41], [0, 1, 1, 0]);
@@ -58,10 +70,21 @@ export default function MagazineSection() {
   const FLIP2_END = 0.65;
   const FLIP2_MID = (FLIP2_START + FLIP2_END) / 2;
 
-  const flip2FrontRotate = useTransform(scrollYProgress, [FLIP2_START, FLIP2_END], [0, -180]);
-  const flip2BackRotate = useTransform(scrollYProgress, [FLIP2_START, FLIP2_END], [180, 0]);
+  const flip2FrontRotate = useTransform(
+    scrollYProgress,
+    [FLIP2_START, FLIP2_START + 0.04, FLIP2_MID, FLIP2_END - 0.04, FLIP2_END],
+    [0, -15, -90, -165, -180]
+  );
+  const flip2BackRotate = useTransform(
+    scrollYProgress,
+    [FLIP2_START, FLIP2_START + 0.04, FLIP2_MID, FLIP2_END - 0.04, FLIP2_END],
+    [180, 165, 90, 15, 0]
+  );
   const flip2FrontOpacity = useTransform(scrollYProgress, [FLIP2_MID - 0.005, FLIP2_MID + 0.005], [1, 0]);
   const flip2BackOpacity = useTransform(scrollYProgress, [FLIP2_MID - 0.005, FLIP2_MID + 0.005], [0, 1]);
+
+  const flip2Scale = useTransform(scrollYProgress, [FLIP2_START, FLIP2_MID, FLIP2_END], [1, 1.03, 1]);
+  const flip2ShadowOpacity = useTransform(scrollYProgress, [FLIP2_START, FLIP2_MID, FLIP2_END], [0, 0.35, 0]);
   const flip2Show = useTransform(scrollYProgress, [0.41, 0.43, 0.63, 0.66], [0, 1, 1, 0]);
 
   const s2RightOpacity = useTransform(scrollYProgress, [0.44, 0.47], [0, 1]);
@@ -69,6 +92,19 @@ export default function MagazineSection() {
 
   const s1RightHide = useTransform(scrollYProgress, [0.44, 0.47], [1, 0]);
   const s1LeftHide = useTransform(scrollYProgress, [0.62, 0.65], [1, 0]);
+
+  // Book shadow that lifts during flips
+  const bookShadow = useTransform(
+    scrollYProgress,
+    [0.20, FLIP1_MID, 0.42, FLIP2_MID, 0.68],
+    [
+      "0 4px 20px rgba(0,0,0,0.08)",
+      "0 16px 50px rgba(0,0,0,0.18)",
+      "0 4px 20px rgba(0,0,0,0.08)",
+      "0 16px 50px rgba(0,0,0,0.18)",
+      "0 4px 20px rgba(0,0,0,0.08)",
+    ]
+  );
 
   return (
     <section
@@ -79,9 +115,9 @@ export default function MagazineSection() {
       <div className="sticky top-0 z-10 flex flex-col items-center pt-[6vh] md:pt-[8vh] pb-[6vh]">
         <div className="w-full px-4 md:px-[60px]" style={{ maxWidth: 1100 }}>
           <div className="w-full mx-auto" style={{ maxWidth: 768 }}>
-            <div
+            <motion.div
               className="relative w-full select-none aspect-[5/4]"
-              style={{ perspective: 2500 }}
+              style={{ perspective: 2500, boxShadow: bookShadow }}
             >
               {/* ── SPREAD 1 ── */}
 
@@ -130,69 +166,116 @@ export default function MagazineSection() {
 
               {/* ── FLIP 1: right-clip (front = BOOK_COVER) ── */}
               <motion.div
-                className="absolute top-0 left-1/2 w-1/2 h-full overflow-hidden z-[30]"
-                style={{ opacity: flip1Show, perspective: 2500 }}
+                className="absolute top-0 left-1/2 w-1/2 h-full z-[30]"
+                style={{ opacity: flip1Show, perspective: 2500, clipPath: "inset(0)", transformStyle: "preserve-3d" }}
               >
                 <motion.div
                   className="absolute inset-0"
                   style={{
                     rotateY: flip1FrontRotate,
                     transformOrigin: "left center",
+                    backfaceVisibility: "hidden",
                     opacity: flip1FrontOpacity,
+                    scale: flip1Scale,
                   }}
                 >
                   <Image src={BOOK_COVER} alt="Cover front" fill className="object-cover" sizes="(max-width:768px) 50vw,384px" />
+                  {/* Page edge highlight */}
+                  <div className="absolute top-0 left-0 bottom-0 w-[2px] bg-white/40" />
+                  {/* Curl shadow */}
+                  <motion.div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                      opacity: flip1ShadowOpacity,
+                      background: "linear-gradient(to right, rgba(0,0,0,0.25) 0%, transparent 40%)",
+                    }}
+                  />
                 </motion.div>
               </motion.div>
 
               {/* ── FLIP 1: left-clip (back = S1_LEFT / page 1) ── */}
               <motion.div
-                className="absolute top-0 left-0 w-1/2 h-full overflow-hidden z-[30]"
-                style={{ opacity: flip1Show, perspective: 2500 }}
+                className="absolute top-0 left-0 w-1/2 h-full z-[30]"
+                style={{ opacity: flip1Show, perspective: 2500, clipPath: "inset(0)", transformStyle: "preserve-3d" }}
               >
                 <motion.div
                   className="absolute inset-0"
                   style={{
                     rotateY: flip1BackRotate,
                     transformOrigin: "right center",
+                    backfaceVisibility: "hidden",
                     opacity: flip1BackOpacity,
+                    scale: flip1Scale,
                   }}
                 >
                   <Image src={S1_LEFT} alt="Page 1" fill className="object-cover" sizes="(max-width:768px) 50vw,384px" />
+                  {/* Backface paper tint */}
+                  <div className="absolute inset-0 bg-amber-50/10 pointer-events-none" />
+                  {/* Page edge highlight */}
+                  <div className="absolute top-0 right-0 bottom-0 w-[2px] bg-white/40" />
+                  {/* Curl shadow */}
+                  <motion.div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                      opacity: flip1ShadowOpacity,
+                      background: "linear-gradient(to left, rgba(0,0,0,0.2) 0%, transparent 35%)",
+                    }}
+                  />
                 </motion.div>
               </motion.div>
 
               {/* ── FLIP 2: right-clip (front = S1_RIGHT) ── */}
               <motion.div
-                className="absolute top-0 left-1/2 w-1/2 h-full overflow-hidden z-[20]"
-                style={{ opacity: flip2Show, perspective: 2500 }}
+                className="absolute top-0 left-1/2 w-1/2 h-full z-[20]"
+                style={{ opacity: flip2Show, perspective: 2500, clipPath: "inset(0)", transformStyle: "preserve-3d" }}
               >
                 <motion.div
                   className="absolute inset-0"
                   style={{
                     rotateY: flip2FrontRotate,
                     transformOrigin: "left center",
+                    backfaceVisibility: "hidden",
                     opacity: flip2FrontOpacity,
+                    scale: flip2Scale,
                   }}
                 >
                   <Image src={S1_RIGHT} alt="Flip 2 front" fill className="object-cover" sizes="(max-width:768px) 50vw,384px" />
+                  <div className="absolute top-0 left-0 bottom-0 w-[2px] bg-white/40" />
+                  <motion.div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                      opacity: flip2ShadowOpacity,
+                      background: "linear-gradient(to right, rgba(0,0,0,0.25) 0%, transparent 40%)",
+                    }}
+                  />
                 </motion.div>
               </motion.div>
 
               {/* ── FLIP 2: left-clip (back = S2_LEFT) ── */}
               <motion.div
-                className="absolute top-0 left-0 w-1/2 h-full overflow-hidden z-[20]"
-                style={{ opacity: flip2Show, perspective: 2500 }}
+                className="absolute top-0 left-0 w-1/2 h-full z-[20]"
+                style={{ opacity: flip2Show, perspective: 2500, clipPath: "inset(0)", transformStyle: "preserve-3d" }}
               >
                 <motion.div
                   className="absolute inset-0"
                   style={{
                     rotateY: flip2BackRotate,
                     transformOrigin: "right center",
+                    backfaceVisibility: "hidden",
                     opacity: flip2BackOpacity,
+                    scale: flip2Scale,
                   }}
                 >
                   <Image src={S2_LEFT} alt="Flip 2 back" fill className="object-cover" sizes="(max-width:768px) 50vw,384px" />
+                  <div className="absolute inset-0 bg-amber-50/10 pointer-events-none" />
+                  <div className="absolute top-0 right-0 bottom-0 w-[2px] bg-white/40" />
+                  <motion.div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                      opacity: flip2ShadowOpacity,
+                      background: "linear-gradient(to left, rgba(0,0,0,0.2) 0%, transparent 35%)",
+                    }}
+                  />
                 </motion.div>
               </motion.div>
 
@@ -228,7 +311,7 @@ export default function MagazineSection() {
                   ))}
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>

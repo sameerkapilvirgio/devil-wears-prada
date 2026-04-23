@@ -51,14 +51,14 @@ export default function QuizSection() {
   };
 
   return (
-    <div className="pt-1 md:pt-2">
+    <div>
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
         className="flex flex-row items-center justify-between"
         style={{
-          padding: "4px 16px 8px",
+          padding: "4px 16px 4px",
           maxWidth: 768,
           marginLeft: "auto",
           marginRight: "auto",
@@ -66,14 +66,14 @@ export default function QuizSection() {
       >
         <div>
           <h2
-            className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white tracking-wide"
+            className="text-lg sm:text-2xl md:text-xl font-bold text-white tracking-wide"
             style={{ fontFamily: "var(--font-body)" }}
           >
             PICK <span className="text-[var(--color-red)]">YOUR</span> STYLE
           </h2>
         </div>
 
-        <div className="relative w-20 h-14 sm:w-28 sm:h-20 md:w-36 md:h-24 flex-shrink-0">
+        <div className="relative w-20 h-14 sm:w-28 sm:h-20 md:w-20 md:h-14 flex-shrink-0">
           <Image
             src="/images/movie-logo.svg"
             alt="The Devil Wears Prada 2"
