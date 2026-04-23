@@ -7,9 +7,9 @@ import { motion, useScroll, useTransform, useInView } from "framer-motion";
 const ease = [0.25, 0.46, 0.45, 0.94] as const;
 
 const STATS = [
-  { label: "PIECES", value: "12" },
+  { label: "STYLES", value: "30" },
   { label: "ATELIERS", value: "04" },
-  { label: "RELEASED", value: "A/W" },
+  { label: "DROPS", value: "1 May" },
   { label: "CHAPTER", value: "II" },
 ];
 
@@ -28,23 +28,23 @@ export default function StorySection() {
     <section
       ref={sectionRef}
       className="relative"
-      style={{ background: "var(--color-cream)" }}
+      style={{ background: "var(--color-beige)" }}
     >
-      <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16 pt-10 pb-4 md:py-32 lg:py-40">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16 pt-10 mt-16 pb-10 md:pt-24 md:pb-32 lg:pt-32 lg:pb-40">
         {/* ── Top: Headline + Collage ── */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-12 lg:gap-16 items-start">
           {/* Left — Headline */}
-          <div>
+          <div className="order-1">
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, ease }}
             >
-              <div className="tracking-editorial text-[var(--color-gray)] text-[0.6rem] mb-6 md:mb-8">
+              <div className="tracking-editorial text-[var(--color-gray)] text-[0.6rem] mb-4 md:mb-8">
                 DEVIL WEARS PRADA COLLECTION
               </div>
               <h2
-                className="editorial-heading text-[clamp(1.8rem,4vw,3.2rem)] text-[var(--color-dark)] mb-6 md:mb-8"
+                className="editorial-heading text-[clamp(2.8rem,8vw,3.2rem)] text-[var(--color-dark)] mb-4 md:mb-8"
               >
                 A wardrobe
                 <br />
@@ -57,7 +57,7 @@ export default function StorySection() {
 
             {/* Body text — two columns */}
             <motion.div
-              className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 mb-10 md:mb-12"
+              className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 mb-6 md:mb-12"
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.2, ease }}
@@ -83,12 +83,12 @@ export default function StorySection() {
 
             {/* Stats bar */}
             <motion.div
-              className="mb-10 md:mb-12 pt-8 border-t border-[var(--color-dark)]/10"
+              className="mb-6 md:mb-12 pt-6 md:pt-8 border-t border-[var(--color-dark)]/10"
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.35, ease }}
             >
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 sm:gap-12">
+              <div className="grid grid-cols-4 gap-4 sm:gap-12">
                 {STATS.map((stat, i) => (
                   <motion.div
                     key={stat.label}
@@ -100,8 +100,8 @@ export default function StorySection() {
                       {stat.label}
                     </div>
                     <div
-                      className="font-accent text-3xl md:text-4xl lg:text-5xl text-[var(--color-dark)]"
-                      style={{ fontStyle: stat.label === "RELEASED" ? "italic" : "normal" }}
+                      className="font-accent text-2xl md:text-4xl lg:text-5xl text-[var(--color-dark)]"
+                      style={{ fontStyle: stat.label === "DROPS" ? "italic" : "normal" }}
                     >
                       {stat.value}
                     </div>
@@ -110,36 +110,30 @@ export default function StorySection() {
               </div>
             </motion.div>
 
-            {/* Get Notified CTA */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, delay: 0.55, ease }}
-            >
-              <button className="bg-[var(--color-dark)] px-10 py-4 rounded-xl text-white text-sm tracking-[0.1em] uppercase cursor-pointer hover:bg-black transition-colors">
-                Get notified when it drops
-              </button>
-            </motion.div>
           </div>
+
+          {/* Get Notified CTA — before image on mobile, after grid on desktop */}
+          <motion.div
+            className="flex justify-center order-2 lg:order-3 lg:col-span-2 mt-2 lg:mt-14"
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.55, ease }}
+          >
+            <button className="bg-[var(--color-dark)] px-10 py-4 rounded-xl text-white text-sm tracking-[0.1em] uppercase cursor-pointer hover:bg-black transition-colors">
+              Get notified when it drops
+            </button>
+          </motion.div>
 
           {/* Right — Miranda collage */}
           <motion.div
-            className="relative w-full max-w-[300px] md:max-w-[500px] lg:max-w-none mx-auto lg:mx-0 lg:aspect-square"
+            className="relative w-full max-w-[300px] md:max-w-[500px] lg:max-w-none mx-auto lg:mx-0 flex items-end justify-center order-3 lg:order-2 hidden lg:flex"
             initial={{ opacity: 0, scale: 0.92 }}
             animate={isInView ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 1, delay: 0.3, ease }}
           >
-            {/* Ink splatter background element */}
-            <div
-              className="absolute inset-0 z-0"
-              style={{
-                background: "radial-gradient(ellipse at 60% 50%, rgba(26,26,26,0.04) 0%, transparent 70%)",
-              }}
-            />
-
             {/* Main Miranda image */}
             <motion.div
-              className="relative z-10 w-[75%] mx-auto"
+              className="relative z-10 w-[75%] mt-4 lg:mt-24"
               style={{ y: imageY }}
             >
               <Image

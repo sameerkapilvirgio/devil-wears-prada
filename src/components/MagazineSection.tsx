@@ -49,8 +49,11 @@ export default function MagazineSection() {
   );
   const flip1BackOpacity = useTransform(scrollYProgress, [FLIP1_MID - 0.005, FLIP1_MID + 0.005], [0, 1]);
 
-  // Realism: scale lift + curl shadow (peaks at midpoint)
-  const flip1Scale = useTransform(scrollYProgress, [FLIP1_START, FLIP1_MID, FLIP1_END], [1, 1.03, 1]);
+  // Realism: scale lift, foreshortening, Z-lift, curl shadow
+  const flip1Scale = useTransform(scrollYProgress, [FLIP1_START, FLIP1_MID, FLIP1_END], [1, 1.04, 1]);
+  const flip1ScaleX = useTransform(scrollYProgress, [FLIP1_START, FLIP1_MID, FLIP1_END], [1, 0.92, 1]);
+  const flip1Z = useTransform(scrollYProgress, [FLIP1_START, FLIP1_MID, FLIP1_END], [0, 60, 0]);
+  const flip1SkewY = useTransform(scrollYProgress, [FLIP1_START, FLIP1_MID, FLIP1_END], [0, 2, 0]);
   const flip1ShadowOpacity = useTransform(scrollYProgress, [FLIP1_START, FLIP1_MID, FLIP1_END], [0, 0.35, 0]);
 
   // Flipper appears when slide ends, fades out when flip lands
@@ -83,7 +86,10 @@ export default function MagazineSection() {
   const flip2FrontOpacity = useTransform(scrollYProgress, [FLIP2_MID - 0.005, FLIP2_MID + 0.005], [1, 0]);
   const flip2BackOpacity = useTransform(scrollYProgress, [FLIP2_MID - 0.005, FLIP2_MID + 0.005], [0, 1]);
 
-  const flip2Scale = useTransform(scrollYProgress, [FLIP2_START, FLIP2_MID, FLIP2_END], [1, 1.03, 1]);
+  const flip2Scale = useTransform(scrollYProgress, [FLIP2_START, FLIP2_MID, FLIP2_END], [1, 1.04, 1]);
+  const flip2ScaleX = useTransform(scrollYProgress, [FLIP2_START, FLIP2_MID, FLIP2_END], [1, 0.92, 1]);
+  const flip2Z = useTransform(scrollYProgress, [FLIP2_START, FLIP2_MID, FLIP2_END], [0, 60, 0]);
+  const flip2SkewY = useTransform(scrollYProgress, [FLIP2_START, FLIP2_MID, FLIP2_END], [0, 2, 0]);
   const flip2ShadowOpacity = useTransform(scrollYProgress, [FLIP2_START, FLIP2_MID, FLIP2_END], [0, 0.35, 0]);
   const flip2Show = useTransform(scrollYProgress, [0.41, 0.43, 0.63, 0.66], [0, 1, 1, 0]);
 
@@ -93,18 +99,6 @@ export default function MagazineSection() {
   const s1RightHide = useTransform(scrollYProgress, [0.44, 0.47], [1, 0]);
   const s1LeftHide = useTransform(scrollYProgress, [0.62, 0.65], [1, 0]);
 
-  // Book shadow that lifts during flips
-  const bookShadow = useTransform(
-    scrollYProgress,
-    [0.20, FLIP1_MID, 0.42, FLIP2_MID, 0.68],
-    [
-      "0 4px 20px rgba(0,0,0,0.08)",
-      "0 16px 50px rgba(0,0,0,0.18)",
-      "0 4px 20px rgba(0,0,0,0.08)",
-      "0 16px 50px rgba(0,0,0,0.18)",
-      "0 4px 20px rgba(0,0,0,0.08)",
-    ]
-  );
 
   return (
     <section
@@ -115,9 +109,9 @@ export default function MagazineSection() {
       <div className="sticky top-0 z-10 flex flex-col items-center pt-[6vh] md:pt-[8vh] pb-[6vh]">
         <div className="w-full px-4 md:px-[60px]" style={{ maxWidth: 1100 }}>
           <div className="w-full mx-auto" style={{ maxWidth: 768 }}>
-            <motion.div
+            <div
               className="relative w-full select-none aspect-[5/4]"
-              style={{ perspective: 2500, boxShadow: bookShadow }}
+              style={{ perspective: 2500 }}
             >
               {/* ── SPREAD 1 ── */}
 
@@ -177,6 +171,9 @@ export default function MagazineSection() {
                     backfaceVisibility: "hidden",
                     opacity: flip1FrontOpacity,
                     scale: flip1Scale,
+                    scaleX: flip1ScaleX,
+                    z: flip1Z,
+                    skewY: flip1SkewY,
                   }}
                 >
                   <Image src={BOOK_COVER} alt="Cover front" fill className="object-cover" sizes="(max-width:768px) 50vw,384px" />
@@ -206,6 +203,9 @@ export default function MagazineSection() {
                     backfaceVisibility: "hidden",
                     opacity: flip1BackOpacity,
                     scale: flip1Scale,
+                    scaleX: flip1ScaleX,
+                    z: flip1Z,
+                    skewY: flip1SkewY,
                   }}
                 >
                   <Image src={S1_LEFT} alt="Page 1" fill className="object-cover" sizes="(max-width:768px) 50vw,384px" />
@@ -237,6 +237,9 @@ export default function MagazineSection() {
                     backfaceVisibility: "hidden",
                     opacity: flip2FrontOpacity,
                     scale: flip2Scale,
+                    scaleX: flip2ScaleX,
+                    z: flip2Z,
+                    skewY: flip2SkewY,
                   }}
                 >
                   <Image src={S1_RIGHT} alt="Flip 2 front" fill className="object-cover" sizes="(max-width:768px) 50vw,384px" />
@@ -264,6 +267,9 @@ export default function MagazineSection() {
                     backfaceVisibility: "hidden",
                     opacity: flip2BackOpacity,
                     scale: flip2Scale,
+                    scaleX: flip2ScaleX,
+                    z: flip2Z,
+                    skewY: flip2SkewY,
                   }}
                 >
                   <Image src={S2_LEFT} alt="Flip 2 back" fill className="object-cover" sizes="(max-width:768px) 50vw,384px" />
@@ -311,12 +317,12 @@ export default function MagazineSection() {
                   ))}
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div style={{ height: "20vh" }} aria-hidden />
+      <div style={{ height: "28vh" }} aria-hidden />
     </section>
   );
 }
