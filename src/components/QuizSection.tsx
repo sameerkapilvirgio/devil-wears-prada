@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { quizQuestions, quizResults, type QuizResult } from "@/data/quiz";
 import { quizOptionImages } from "@/data/images";
 
@@ -12,8 +12,6 @@ export default function QuizSection() {
   const [result, setResult] = useState<QuizResult | null>(null);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [barComplete, setBarComplete] = useState(false);
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
 
   const isResult = result !== null;
   const isLastQuestion = currentQuestion === quizQuestions.length - 1;
@@ -53,53 +51,72 @@ export default function QuizSection() {
   };
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden">
-      {/* Single dark section: heading + quiz */}
-      <div className="bg-[#1a1a1a] pt-6 md:pt-10">
-        {/* Top: heading left, logo right */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="flex flex-row items-center justify-between"
-          style={{ padding: "16px 16px 16px", maxWidth: 768, marginLeft: "auto", marginRight: "auto" }}
-        >
-          <div>
-            <h2
-              className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[var(--color-red)] tracking-wide"
-              style={{ fontFamily: "var(--font-body)" }}
-            >
-              TAKE THE QUIZ
-            </h2>
-            <h2
-              className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white tracking-wide"
-              style={{ fontFamily: "var(--font-body)" }}
-            >
-              FIND YOUR DWP ALTER EGO
-            </h2>
-          </div>
+    <div className="pt-2 md:pt-4">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+        className="flex flex-row items-center justify-between"
+        style={{
+          padding: "8px 16px 16px",
+          maxWidth: 768,
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
+      >
+        <div>
+          <h2
+            className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[var(--color-red)] tracking-wide"
+            style={{ fontFamily: "var(--font-body)" }}
+          >
+            TAKE THE QUIZ
+          </h2>
+          <h2
+            className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white tracking-wide"
+            style={{ fontFamily: "var(--font-body)" }}
+          >
+            FIND YOUR DWP ALTER EGO
+          </h2>
+        </div>
 
-          <div className="relative w-20 h-14 sm:w-28 sm:h-20 md:w-36 md:h-24 flex-shrink-0">
-            <Image
-              src="/images/movie-logo.svg"
-              alt="The Devil Wears Prada 2"
-              fill
-              className="object-contain"
-            />
-          </div>
-        </motion.div>
-        <div style={{ maxWidth: 768, marginLeft: "auto", marginRight: "auto", padding: "0 16px 24px", minHeight: 500, display: "flex", flexDirection: "column" }}>
-          <div className="w-full" style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-          {/* Progress bar — persists across questions and result */}
+        <div className="relative w-20 h-14 sm:w-28 sm:h-20 md:w-36 md:h-24 flex-shrink-0">
+          <Image
+            src="/images/movie-logo.svg"
+            alt="The Devil Wears Prada 2"
+            fill
+            className="object-contain"
+          />
+        </div>
+      </motion.div>
+
+      <div
+        style={{
+          maxWidth: 768,
+          marginLeft: "auto",
+          marginRight: "auto",
+          padding: "0 16px 24px",
+          minHeight: 460,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <div
+          className="w-full"
+          style={{ flex: 1, display: "flex", flexDirection: "column" }}
+        >
           <div style={{ marginBottom: 12 }}>
-            <div className="flex items-center justify-between transition-opacity duration-300" style={{ marginBottom: 6, opacity: isResult ? 0 : 1 }}>
+            <div
+              className="flex items-center justify-between transition-opacity duration-300"
+              style={{ marginBottom: 6, opacity: isResult ? 0 : 1 }}
+            >
               <span className="tracking-editorial text-white/30 text-[0.5rem]">
                 QUESTION
               </span>
               <span className="font-accent text-white text-sm">
                 {currentQuestion + 1}
                 <span className="text-white/30">
-                  {" "}/ {quizQuestions.length}
+                  {" "}
+                  / {quizQuestions.length}
                 </span>
               </span>
             </div>
@@ -134,7 +151,14 @@ export default function QuizSection() {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.35 }}
                   >
-                    <h3 className="font-accent text-lg sm:text-xl md:text-2xl text-white text-center" style={{ paddingTop: 24, paddingBottom: 24, minHeight: 110 }}>
+                    <h3
+                      className="font-accent text-lg sm:text-xl md:text-2xl text-white text-center"
+                      style={{
+                        paddingTop: 20,
+                        paddingBottom: 20,
+                        minHeight: 100,
+                      }}
+                    >
                       {quizQuestions[currentQuestion].prompt}
                     </h3>
 
@@ -158,7 +182,10 @@ export default function QuizSection() {
                               key={`${currentQuestion}-${i}`}
                               initial={{ scale: 1.15 }}
                               animate={{ scale: 1 }}
-                              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                              transition={{
+                                duration: 1.2,
+                                ease: [0.16, 1, 0.3, 1],
+                              }}
                             >
                               <Image
                                 src={
@@ -202,7 +229,12 @@ export default function QuizSection() {
                   ease: [0.25, 0.46, 0.45, 0.94],
                 }}
                 className="text-center"
-                style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}
+                style={{
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                }}
               >
                 <div className="tracking-editorial text-white/25 mb-4">
                   YOUR RESULT
@@ -227,9 +259,8 @@ export default function QuizSection() {
               </motion.div>
             )}
           </AnimatePresence>
-          </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }

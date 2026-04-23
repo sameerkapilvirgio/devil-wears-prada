@@ -1,368 +1,239 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useRef } from "react";
 import Image from "next/image";
-import { motion, useInView } from "framer-motion";
-
-/* ── Constants ───────────────────────────────────────── */
-
-const SLIDE_DURATION = 0.6;
-const FLIP_DURATION = 1;
-const FLIP_EASE: [number, number, number, number] = [0.645, 0.045, 0.355, 1];
-
-/* ── Image sources — swap these to change pages ──────── */
+import { motion, useScroll, useTransform } from "framer-motion";
 
 const BOOK_COVER = "/images/book-cover.png";
-const PAGE_1 = "/images/page-1.png";
-const PAGE_2 = "/images/magazine-spread.png";
-const PAGE_2_POS = "object-right";
-const PAGE_3 = "/images/cover-image.png";
-const PAGE_4 = "/images/quiz-bg.png";
 
-/* ── FlipBook ────────────────────────────────────────── */
+// Spread 1: revealed when cover opens
+const S1_LEFT =
+  "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=800&h=1000&fit=crop&crop=top";
+const S1_RIGHT =
+  "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&h=1000&fit=crop&crop=top";
 
-type CoverPhase =
-  | "closed"
-  | "sliding-open"
-  | "flipping-open"
-  | "open"
-  | "flipping-close"
-  | "sliding-close";
-
-type PagePhase =
-  | "spread1"
-  | "flipping-forward"
-  | "spread2"
-  | "flipping-backward";
-
-function FlipBook() {
-  const [coverPhase, setCoverPhase] = useState<CoverPhase>("closed");
-  const [pagePhase, setPagePhase] = useState<PagePhase>("spread1");
-  const [isAnimating, setIsAnimating] = useState(false);
-
-  const isClosed = coverPhase === "closed";
-  const isOpen = coverPhase === "open";
-  const onSpread1 = pagePhase === "spread1";
-  const onSpread2 = pagePhase === "spread2";
-
-  const showBookContent =
-    coverPhase === "flipping-open" ||
-    isOpen ||
-    coverPhase === "flipping-close";
-
-  /* ── Cover handlers (identical to before) ── */
-
-  const openBook = useCallback(() => {
-    if (isClosed && !isAnimating) {
-      setIsAnimating(true);
-      setCoverPhase("sliding-open");
-    }
-  }, [isClosed, isAnimating]);
-
-  const closeBook = useCallback(() => {
-    if (isOpen && onSpread1 && !isAnimating) {
-      setIsAnimating(true);
-      setCoverPhase("flipping-close");
-    }
-  }, [isOpen, onSpread1, isAnimating]);
-
-  const handleCoverAnimComplete = useCallback(() => {
-    if (coverPhase === "sliding-open") setCoverPhase("flipping-open");
-    else if (coverPhase === "flipping-open") {
-      setCoverPhase("open");
-      setIsAnimating(false);
-    } else if (coverPhase === "flipping-close") setCoverPhase("sliding-close");
-    else if (coverPhase === "sliding-close") {
-      setCoverPhase("closed");
-      setIsAnimating(false);
-    }
-  }, [coverPhase]);
-
-  const getCoverAnimate = () => {
-    switch (coverPhase) {
-      case "closed":
-      case "sliding-close":
-        return { left: "25%", width: "50%", rotateY: 0 };
-      case "sliding-open":
-      case "flipping-close":
-        return { left: "50%", width: "50%", rotateY: 0 };
-      case "flipping-open":
-      case "open":
-        return { left: "50%", width: "50%", rotateY: -180 };
-    }
-  };
-
-  const getCoverTransition = () => {
-    if (coverPhase === "flipping-open" || coverPhase === "flipping-close") {
-      return { duration: FLIP_DURATION, ease: FLIP_EASE };
-    }
-    return { duration: SLIDE_DURATION, ease: FLIP_EASE };
-  };
-
-  /* ── Page flip handlers (same state machine pattern as cover) ── */
-
-  const flipPageForward = useCallback(() => {
-    if (isOpen && onSpread1 && !isAnimating) {
-      setIsAnimating(true);
-      setPagePhase("flipping-forward");
-    }
-  }, [isOpen, onSpread1, isAnimating]);
-
-  const flipPageBack = useCallback(() => {
-    if (isOpen && onSpread2 && !isAnimating) {
-      setIsAnimating(true);
-      setPagePhase("flipping-backward");
-    }
-  }, [isOpen, onSpread2, isAnimating]);
-
-  const handlePageFlipComplete = useCallback(() => {
-    if (pagePhase === "flipping-forward") {
-      setPagePhase("spread2");
-      setIsAnimating(false);
-    } else if (pagePhase === "flipping-backward") {
-      setPagePhase("spread1");
-      setIsAnimating(false);
-    }
-  }, [pagePhase]);
-
-  /* ── Click handlers ── */
-
-  const handleLeftClick = () => {
-    if (onSpread2) flipPageBack();
-    else closeBook();
-  };
-
-  const handleRightClick = () => {
-    if (onSpread1) flipPageForward();
-  };
-
-  /* ── Base layer content ──
-     The side being REVEALED updates instantly.
-     The side being COVERED stays until the flip completes.
-
-     Forward flip:  right → PAGE_4 (revealed), left stays PAGE_1 (covered by flipper)
-     Backward flip: left → PAGE_1 (revealed), right stays PAGE_4 (covered by flipper)
-  ── */
-
-  const baseLeft = pagePhase === "spread2" ? PAGE_3 : PAGE_1;
-  const baseRight = pagePhase === "spread1" ? PAGE_2 : PAGE_4;
-  const baseRightPos = pagePhase === "spread1" ? PAGE_2_POS : "";
-
-  const isFlipping =
-    pagePhase === "flipping-forward" || pagePhase === "flipping-backward";
-
-  return (
-    <div className="relative select-none">
-      <div
-        className="relative w-full aspect-[3/2] md:aspect-[16/10]"
-        style={{ perspective: "2500px" }}
-      >
-        {/* ── Base layer ── */}
-        <div className="absolute inset-0 flex overflow-hidden rounded-sm">
-          <div
-            className="w-1/2 h-full relative overflow-hidden"
-            style={{ opacity: isOpen ? 1 : 0 }}
-          >
-            <Image
-              src={baseLeft}
-              alt="Left page"
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 50vw, 400px"
-            />
-          </div>
-          <div
-            className="w-1/2 h-full relative overflow-hidden"
-            style={{ opacity: showBookContent ? 1 : 0 }}
-          >
-            <Image
-              src={baseRight}
-              alt="Right page"
-              fill
-              className={`object-cover ${baseRightPos}`}
-              sizes="(max-width: 768px) 50vw, 400px"
-            />
-          </div>
-        </div>
-
-        {/* ── Spine ── */}
-        <div
-          className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[3px] z-[50] pointer-events-none transition-opacity duration-300"
-          style={{
-            background:
-              "linear-gradient(to right, rgba(0,0,0,0.03), rgba(0,0,0,0.08), rgba(0,0,0,0.03))",
-            opacity: showBookContent ? 1 : 0,
-          }}
-        />
-
-        {/* ── Page flipper — mounts fresh per flip so initial rotation is explicit ── */}
-        {isFlipping && (
-          <motion.div
-            key={pagePhase}
-            className="absolute top-0 left-1/2 w-1/2 h-full z-[20]"
-            initial={{ rotateY: pagePhase === "flipping-forward" ? 0 : -180 }}
-            animate={{ rotateY: pagePhase === "flipping-forward" ? -180 : 0 }}
-            transition={{ duration: FLIP_DURATION, ease: FLIP_EASE }}
-            onAnimationComplete={handlePageFlipComplete}
-            style={{
-              transformOrigin: "left center",
-              transformStyle: "preserve-3d",
-              willChange: "transform",
-            }}
-          >
-            {/* Front — page 2 */}
-            <div
-              className="absolute inset-0 overflow-hidden"
-              style={{ backfaceVisibility: "hidden" }}
-            >
-              <Image
-                src={PAGE_2}
-                alt="Page 2"
-                fill
-                className={`object-cover ${PAGE_2_POS}`}
-                sizes="(max-width: 768px) 50vw, 400px"
-              />
-            </div>
-            {/* Back — page 3 */}
-            <div
-              className="absolute inset-0 overflow-hidden"
-              style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
-            >
-              <Image
-                src={PAGE_3}
-                alt="Page 3"
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 50vw, 400px"
-              />
-            </div>
-          </motion.div>
-        )}
-
-        {/* ── Cover — slide + flip ── */}
-        <motion.div
-          className="absolute top-0 z-[60] rounded-sm"
-          initial={false}
-          animate={getCoverAnimate()}
-          transition={getCoverTransition()}
-          onAnimationComplete={handleCoverAnimComplete}
-          onClick={isClosed ? openBook : undefined}
-          style={{
-            height: "100%",
-            transformOrigin: "left center",
-            transformStyle: "preserve-3d",
-            cursor: isClosed ? "pointer" : "default",
-            opacity: isOpen ? 0 : 1,
-            visibility: isOpen ? "hidden" : "visible",
-            pointerEvents: isClosed ? "auto" : "none",
-          }}
-        >
-          <div
-            className="absolute inset-0 overflow-hidden"
-            style={{ backfaceVisibility: "hidden" }}
-          >
-            <Image
-              src={BOOK_COVER}
-              alt="Book cover"
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 768px"
-              priority
-            />
-          </div>
-          <div
-            className="absolute inset-0 overflow-hidden"
-            style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
-          >
-            <Image
-              src={PAGE_1}
-              alt="Page 1"
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 50vw, 400px"
-            />
-          </div>
-        </motion.div>
-
-        {/* ── Click zones ── */}
-        {isOpen && (
-          <>
-            <div
-              className="absolute top-0 left-0 w-1/2 h-full z-[200] cursor-pointer"
-              onClick={handleLeftClick}
-            />
-            {onSpread1 && (
-              <div
-                className="absolute top-0 left-1/2 w-1/2 h-full z-[200] cursor-pointer"
-                onClick={handleRightClick}
-              />
-            )}
-          </>
-        )}
-
-      </div>
-    </div>
-  );
-}
-
-/* ── Section ─────────────────────────────────────────── */
+// Spread 2: revealed when page flips
+const S2_LEFT =
+  "https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=800&h=1000&fit=crop&crop=top";
+const S2_RIGHT =
+  "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800&h=1000&fit=crop&crop=top";
 
 export default function MagazineSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  // ── FLIP 1: Cover slides then flips via two-clip technique (0.12 → 0.40) ──
+  const coverSlideX = useTransform(scrollYProgress, [0.12, 0.25], ["-50%", "0%"]);
+
+  const FLIP1_START = 0.25;
+  const FLIP1_END = 0.40;
+  const FLIP1_MID = (FLIP1_START + FLIP1_END) / 2;
+
+  // Right clip: cover front, rotates 0→-180, visible first half only
+  const flip1FrontRotate = useTransform(scrollYProgress, [FLIP1_START, FLIP1_END], [0, -180]);
+  const flip1FrontOpacity = useTransform(scrollYProgress, [FLIP1_MID - 0.005, FLIP1_MID + 0.005], [1, 0]);
+
+  // Left clip: page 1 (S1_LEFT), rotates 180→0, visible second half only
+  const flip1BackRotate = useTransform(scrollYProgress, [FLIP1_START, FLIP1_END], [180, 0]);
+  const flip1BackOpacity = useTransform(scrollYProgress, [FLIP1_MID - 0.005, FLIP1_MID + 0.005], [0, 1]);
+
+  // Flipper appears when slide ends, fades out when flip lands
+  const flip1Show = useTransform(scrollYProgress, [0.24, 0.25, 0.38, 0.41], [0, 1, 1, 0]);
+
+  // Sliding cover — only during slide phase, gone before flip starts
+  const slidingCoverOpacity = useTransform(scrollYProgress, [0.24, 0.25], [1, 0]);
+
+  // Spread 1 right page: under the cover, reveals as flip starts
+  const s1RightOpacity = useTransform(scrollYProgress, [0.24, 0.27], [0, 1]);
+  // Spread 1 left page: static, fades in as the flipper lands
+  const s1LeftOpacity = useTransform(scrollYProgress, [0.38, 0.40], [0, 1]);
+  const spine1Opacity = useTransform(scrollYProgress, [0.32, 0.34], [0, 1]);
+
+  // ── FLIP 2: Right page lifts and flips to reveal spread 2 (0.45 → 0.65) ──
+  const FLIP2_START = 0.45;
+  const FLIP2_END = 0.65;
+  const FLIP2_MID = (FLIP2_START + FLIP2_END) / 2;
+
+  const flip2FrontRotate = useTransform(scrollYProgress, [FLIP2_START, FLIP2_END], [0, -180]);
+  const flip2BackRotate = useTransform(scrollYProgress, [FLIP2_START, FLIP2_END], [180, 0]);
+  const flip2FrontOpacity = useTransform(scrollYProgress, [FLIP2_MID - 0.005, FLIP2_MID + 0.005], [1, 0]);
+  const flip2BackOpacity = useTransform(scrollYProgress, [FLIP2_MID - 0.005, FLIP2_MID + 0.005], [0, 1]);
+  const flip2Show = useTransform(scrollYProgress, [0.41, 0.43, 0.63, 0.66], [0, 1, 1, 0]);
+
+  const s2RightOpacity = useTransform(scrollYProgress, [0.44, 0.47], [0, 1]);
+  const s2LeftOpacity = useTransform(scrollYProgress, [0.62, 0.65], [0, 1]);
+
+  const s1RightHide = useTransform(scrollYProgress, [0.44, 0.47], [1, 0]);
+  const s1LeftHide = useTransform(scrollYProgress, [0.62, 0.65], [1, 0]);
 
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden py-6 md:py-12"
+      className="relative z-10"
       style={{ background: "var(--color-cream)" }}
     >
-      <div
-        className="px-3 md:px-[60px]"
-        style={{
-          maxWidth: 1100,
-          marginLeft: "auto",
-          marginRight: "auto",
-        }}
-      >
-        <motion.div
-          initial={{ opacity: 0, y: 25 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="grid grid-cols-1 md:grid-cols-2 md:items-center"
-          style={{ marginBottom: 16 }}
-        >
-          {/* Staggered heading */}
-          <div className="text-[#1a1a1a] font-accent text-[22px] md:text-[42px] leading-[1.1] shrink-0">
-            <div className="hidden md:flex flex-col items-start w-fit">
-              <div className="flex flex-col items-center">
-                <span>ABOUT</span>
-                <span>THE</span>
-              </div>
-              <span className="italic font-medium">COLLECTION</span>
-            </div>
-            <span className="md:hidden text-center block">ABOUT THE <span className="italic font-medium">COLLECTION</span></span>
-          </div>
-          {/* Subheading */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.1 }}
-            className="font-accent italic text-center text-lg sm:text-xl md:text-2xl lg:text-3xl text-[#2d2926] leading-[1.5] mt-3 md:mt-0"
-          >
-            Twelve pieces. Three silhouettes. One satisfying surrender to power dressing — straight from the Runway.
-          </motion.p>
-        </motion.div>
+      <div className="sticky top-0 flex flex-col items-center pt-[6vh] md:pt-[8vh] pb-[6vh]">
+        <div className="w-full px-4 md:px-[60px]" style={{ maxWidth: 1100 }}>
+          <div className="w-full mx-auto" style={{ maxWidth: 768 }}>
+            <div
+              className="relative w-full select-none aspect-[5/4]"
+              style={{ perspective: 2500 }}
+            >
+              {/* ── SPREAD 1 ── */}
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.25 }}
-          style={{ maxWidth: 768, marginLeft: "auto", marginRight: "auto" }}
-        >
-          <FlipBook />
-        </motion.div>
+              <motion.div
+                className="absolute top-0 right-0 w-1/2 h-full rounded-r-sm overflow-hidden"
+                style={{ opacity: s1RightOpacity }}
+              >
+                <motion.div className="absolute inset-0" style={{ opacity: s1RightHide }}>
+                  <Image src={S1_RIGHT} alt="Spread 1 right" fill className="object-cover" sizes="(max-width:768px) 50vw,384px" />
+                </motion.div>
+              </motion.div>
+
+              <motion.div
+                className="absolute top-0 left-0 w-1/2 h-full rounded-l-sm overflow-hidden"
+                style={{ opacity: s1LeftOpacity }}
+              >
+                <motion.div className="absolute inset-0" style={{ opacity: s1LeftHide }}>
+                  <Image src={S1_LEFT} alt="Spread 1 left" fill className="object-cover" sizes="(max-width:768px) 50vw,384px" />
+                </motion.div>
+              </motion.div>
+
+              {/* ── SPREAD 2 ── */}
+
+              <motion.div
+                className="absolute top-0 right-0 w-1/2 h-full rounded-r-sm overflow-hidden"
+                style={{ opacity: s2RightOpacity }}
+              >
+                <Image src={S2_RIGHT} alt="Spread 2 right" fill className="object-cover" sizes="(max-width:768px) 50vw,384px" />
+              </motion.div>
+
+              <motion.div
+                className="absolute top-0 left-0 w-1/2 h-full rounded-l-sm overflow-hidden z-[6]"
+                style={{ opacity: s2LeftOpacity }}
+              >
+                <Image src={S2_LEFT} alt="Spread 2 left" fill className="object-cover" sizes="(max-width:768px) 50vw,384px" />
+              </motion.div>
+
+              {/* ── SPINE ── */}
+              <motion.div
+                className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[3px] z-[50] pointer-events-none"
+                style={{
+                  background: "linear-gradient(to right, rgba(0,0,0,0.03), rgba(0,0,0,0.08), rgba(0,0,0,0.03))",
+                  opacity: spine1Opacity,
+                }}
+              />
+
+              {/* ── FLIP 1: right-clip (front = BOOK_COVER) ── */}
+              <motion.div
+                className="absolute top-0 left-1/2 w-1/2 h-full overflow-hidden z-[30]"
+                style={{ opacity: flip1Show, perspective: 2500 }}
+              >
+                <motion.div
+                  className="absolute inset-0"
+                  style={{
+                    rotateY: flip1FrontRotate,
+                    transformOrigin: "left center",
+                    opacity: flip1FrontOpacity,
+                  }}
+                >
+                  <Image src={BOOK_COVER} alt="Cover front" fill className="object-cover" sizes="(max-width:768px) 50vw,384px" />
+                </motion.div>
+              </motion.div>
+
+              {/* ── FLIP 1: left-clip (back = S1_LEFT / page 1) ── */}
+              <motion.div
+                className="absolute top-0 left-0 w-1/2 h-full overflow-hidden z-[30]"
+                style={{ opacity: flip1Show, perspective: 2500 }}
+              >
+                <motion.div
+                  className="absolute inset-0"
+                  style={{
+                    rotateY: flip1BackRotate,
+                    transformOrigin: "right center",
+                    opacity: flip1BackOpacity,
+                  }}
+                >
+                  <Image src={S1_LEFT} alt="Page 1" fill className="object-cover" sizes="(max-width:768px) 50vw,384px" />
+                </motion.div>
+              </motion.div>
+
+              {/* ── FLIP 2: right-clip (front = S1_RIGHT) ── */}
+              <motion.div
+                className="absolute top-0 left-1/2 w-1/2 h-full overflow-hidden z-[20]"
+                style={{ opacity: flip2Show, perspective: 2500 }}
+              >
+                <motion.div
+                  className="absolute inset-0"
+                  style={{
+                    rotateY: flip2FrontRotate,
+                    transformOrigin: "left center",
+                    opacity: flip2FrontOpacity,
+                  }}
+                >
+                  <Image src={S1_RIGHT} alt="Flip 2 front" fill className="object-cover" sizes="(max-width:768px) 50vw,384px" />
+                </motion.div>
+              </motion.div>
+
+              {/* ── FLIP 2: left-clip (back = S2_LEFT) ── */}
+              <motion.div
+                className="absolute top-0 left-0 w-1/2 h-full overflow-hidden z-[20]"
+                style={{ opacity: flip2Show, perspective: 2500 }}
+              >
+                <motion.div
+                  className="absolute inset-0"
+                  style={{
+                    rotateY: flip2BackRotate,
+                    transformOrigin: "right center",
+                    opacity: flip2BackOpacity,
+                  }}
+                >
+                  <Image src={S2_LEFT} alt="Flip 2 back" fill className="object-cover" sizes="(max-width:768px) 50vw,384px" />
+                </motion.div>
+              </motion.div>
+
+              {/* ── SLIDING COVER (slide phase only) ── */}
+              <motion.div
+                className="absolute top-0 left-1/2 w-1/2 h-full z-[60] rounded-sm overflow-hidden"
+                style={{
+                  x: coverSlideX,
+                  opacity: slidingCoverOpacity,
+                  pointerEvents: "none",
+                }}
+              >
+                <Image src={BOOK_COVER} alt="Book cover" fill className="object-cover" sizes="(max-width:768px) 50vw,384px" priority />
+              </motion.div>
+
+              {/* Keep scrolling hint */}
+              <div className="absolute -bottom-16 md:-bottom-20 left-0 right-0 flex flex-col items-center gap-2 z-[70]">
+                <span className="tracking-editorial text-[var(--color-gray)] text-[0.55rem] md:text-[0.6rem]">
+                  KEEP SCROLLING
+                </span>
+                <div className="flex items-center gap-3">
+                  {[0, 0.15, 0.3].map((delay) => (
+                    <motion.svg
+                      key={delay}
+                      width="16" height="16" viewBox="0 0 16 16"
+                      fill="none" stroke="var(--color-gray)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+                      animate={{ y: [4, -2, 4] }}
+                      transition={{ duration: 1.5, delay, repeat: Infinity, ease: "easeInOut" }}
+                    >
+                      <path d="M8 12V4" />
+                      <path d="M4 6l4-4 4 4" />
+                    </motion.svg>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <div style={{ height: "50vh" }} aria-hidden />
     </section>
   );
 }

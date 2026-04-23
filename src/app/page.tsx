@@ -1,11 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import HeroSection from "@/components/HeroSection";
 import MagazineSection from "@/components/MagazineSection";
 import MoodboardSection from "@/components/MoodboardSection";
 import ProductGrid from "@/components/ProductGrid";
-import QuizSection from "@/components/QuizSection";
+import QuizCTA from "@/components/QuizCTA";
+import QuizDrawer from "@/components/QuizDrawer";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -15,28 +17,15 @@ const fadeUp = {
 };
 
 export default function Home() {
+  const [quizOpen, setQuizOpen] = useState(false);
+
   return (
-    <main style={{ paddingLeft: 12, paddingRight: 12 }}>
-      <motion.div
-        style={{ marginLeft: -12, marginRight: -12 }}
-        initial="hidden"
-        animate="visible"
-        variants={fadeUp}
-        transition={{ duration: 0.45, ease }}
-      >
-        <HeroSection />
-      </motion.div>
+    <main>
+      {/* Hero — full-bleed video, no padding needed */}
+      <HeroSection />
 
-      <motion.div
-        style={{ marginLeft: -12, marginRight: -12 }}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-80px" }}
-        variants={fadeUp}
-        transition={{ duration: 0.4, ease }}
-      >
-        <MagazineSection />
-      </motion.div>
+      {/* Magazine — scroll-driven, manages its own sticky + scroll runway */}
+      <MagazineSection />
 
       <motion.div
         initial="hidden"
@@ -45,11 +34,10 @@ export default function Home() {
         variants={fadeUp}
         transition={{ duration: 0.4, ease }}
       >
-        <MoodboardSection />
+        <MoodboardSection onOpenQuiz={() => setQuizOpen(true)} />
       </motion.div>
 
       <motion.div
-        style={{ marginLeft: -12, marginRight: -12 }}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-80px" }}
@@ -60,20 +48,20 @@ export default function Home() {
       </motion.div>
 
       <motion.div
-        style={{ marginLeft: -12, marginRight: -12 }}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-80px" }}
         variants={fadeUp}
         transition={{ duration: 0.4, ease }}
       >
-        <QuizSection />
+        <QuizCTA onOpen={() => setQuizOpen(true)} />
       </motion.div>
+
+      <QuizDrawer isOpen={quizOpen} onClose={() => setQuizOpen(false)} />
 
       {/* Footer */}
       <motion.footer
         className="bg-[#1a1a1a] py-16 md:py-20 border-t border-white/5"
-        style={{ marginLeft: -12, marginRight: -12 }}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-60px" }}
@@ -87,7 +75,10 @@ export default function Home() {
               <div className="font-accent text-2xl text-white mb-3">
                 DWP<span className="text-[var(--color-red)] italic">2</span>{" "}
                 <span className="text-white/30">×</span>{" "}
-                <span className="tracking-[0.1em] text-lg text-white/60" style={{ fontFamily: "var(--font-body)" }}>
+                <span
+                  className="tracking-[0.1em] text-lg text-white/60"
+                  style={{ fontFamily: "var(--font-body)" }}
+                >
                   VIRGIO
                 </span>
               </div>

@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import Image from "next/image";
-import { motion, useInView } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { products, type Product } from "@/data/products";
 import { productImages } from "@/data/images";
 
@@ -22,28 +22,26 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.5, delay: (index % 4) * 0.08, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className="cursor-pointer bg-white"
+      transition={{ duration: 0.5, delay: index * 0.06, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className="cursor-pointer bg-white flex-shrink-0 w-[70vw] sm:w-[45vw] md:w-[340px] lg:w-[380px]"
     >
-      {/* Image */}
-      <div className="relative aspect-[2/3] overflow-hidden bg-[#f5f5f5]">
+      <div className="relative aspect-[3/4] overflow-hidden bg-[#f5f5f5]">
         <motion.div
           className="relative w-full h-full"
           initial={{ scale: 1.12 }}
           whileInView={{ scale: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: (index % 4) * 0.05 }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
         >
           <Image
             src={imgSrc}
             alt={product.name}
             fill
             className="object-cover"
-            sizes="(max-width: 768px) 50vw, 33vw"
+            sizes="(max-width: 640px) 70vw, (max-width: 768px) 45vw, 380px"
           />
         </motion.div>
 
-        {/* Heart icon */}
         <button
           className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center text-[#666] hover:text-[var(--color-red)] transition-colors cursor-pointer"
           aria-label="Favourite"
@@ -51,10 +49,9 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
           <HeartIcon />
         </button>
 
-        {/* Devil Approved badge */}
         {product.badge && (
-          <div className="absolute bottom-2 left-2 z-10">
-            <div className="relative w-14 h-14 sm:w-16 sm:h-16">
+          <div className="absolute bottom-3 left-3 z-10">
+            <div className="relative w-16 h-16 sm:w-18 sm:h-18">
               <Image
                 src="/images/devil-approved-logo.svg"
                 alt="Devil Approved"
@@ -66,14 +63,13 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
         )}
       </div>
 
-      {/* Info */}
-      <div style={{ padding: "8px 10px 10px" }}>
-        <p className="text-xs sm:text-sm text-[var(--color-black)] leading-[1.4] line-clamp-2" style={{ marginBottom: 4 }}>
+      <div style={{ padding: "10px 12px 14px" }}>
+        <p className="text-sm sm:text-base text-[var(--color-black)] leading-[1.4] line-clamp-2" style={{ marginBottom: 6 }}>
           <span className="font-bold">{product.name}</span>{" "}
           <span className="font-normal text-[#666]">{product.description}</span>
         </p>
         <span
-          className="text-xs sm:text-sm font-bold text-[var(--color-black)]"
+          className="text-sm sm:text-base font-bold text-[var(--color-black)]"
           style={{ fontFamily: "var(--font-body)" }}
         >
           {product.price}
@@ -83,27 +79,66 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
   );
 }
 
+function ArrowButton({ direction, onClick }: { direction: "left" | "right"; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="hidden md:flex w-10 h-10 items-center justify-center rounded-full border border-[var(--color-black)]/10 text-[var(--color-black)]/50 hover:border-[var(--color-black)]/30 hover:text-[var(--color-black)] transition-all cursor-pointer bg-white/80 backdrop-blur-sm"
+      aria-label={`Scroll ${direction}`}
+    >
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        {direction === "left" ? (
+          <path d="M15 18l-6-6 6-6" />
+        ) : (
+          <path d="M9 18l6-6-6-6" />
+        )}
+      </svg>
+    </button>
+  );
+}
+
 export default function ProductGrid() {
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const scroll = (direction: "left" | "right") => {
+    if (!scrollRef.current) return;
+    const amount = scrollRef.current.offsetWidth * 0.6;
+    scrollRef.current.scrollBy({
+      left: direction === "left" ? -amount : amount,
+      behavior: "smooth",
+    });
+  };
 
   return (
     <section
-      ref={sectionRef}
-      className="relative pb-6 md:pb-10"
+      className="relative py-8 md:py-14"
       style={{ background: "#f5f5f5" }}
     >
-      <h2 className="font-accent text-center text-2xl md:text-4xl text-[var(--color-black)] py-6 md:py-10">
-        Signature <span className="font-bold italic">Silhouettes</span>
-      </h2>
+      <div className="flex items-end justify-between px-5 md:px-12 lg:px-16 mb-6 md:mb-8" style={{ maxWidth: 1400, marginLeft: "auto", marginRight: "auto" }}>
+        <h2 className="font-accent text-2xl sm:text-3xl md:text-4xl text-[var(--color-black)]">
+          Signature <span className="font-bold italic">Silhouettes</span>
+        </h2>
+        <div className="flex items-center gap-2">
+          <ArrowButton direction="left" onClick={() => scroll("left")} />
+          <ArrowButton direction="right" onClick={() => scroll("right")} />
+        </div>
+      </div>
+
       <div
-        className="grid grid-cols-3 lg:grid-cols-4"
-        style={{ gap: 4, maxWidth: 1200, marginLeft: "auto", marginRight: "auto", padding: "0 12px" }}
+        ref={scrollRef}
+        className="flex gap-3 md:gap-4 overflow-x-auto overflow-y-hidden px-5 md:px-12 lg:px-16 pb-4 snap-x snap-mandatory"
+        style={{
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+          WebkitOverflowScrolling: "touch",
+        }}
       >
         {products.map((product, index) => (
-          <div key={product.id} className={index >= 6 ? "hidden lg:block" : ""} >
+          <div key={product.id} className="snap-start">
             <ProductCard product={product} index={index} />
           </div>
         ))}
+        <div className="flex-shrink-0 w-1" aria-hidden />
       </div>
     </section>
   );
