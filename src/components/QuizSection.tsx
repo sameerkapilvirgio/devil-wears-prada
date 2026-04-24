@@ -6,15 +6,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { quizQuestions, quizResults, type QuizResult } from "@/data/quiz";
 import { quizOptionImages } from "@/data/images";
 
-export default function QuizSection() {
+export default function QuizSection({ onWaitlistOpen }: { onWaitlistOpen: () => void }) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<string[]>([]);
-  const [result, setResult] = useState<QuizResult | null>(null);
-  const [selectedOption, setSelectedOption] = useState<number | null>(null);
-  const [barComplete, setBarComplete] = useState(false);
+  const [answers,         setAnswers]          = useState<string[]>([]);
+  const [result,          setResult]           = useState<QuizResult | null>(null);
+  const [selectedOption,  setSelectedOption]   = useState<number | null>(null);
+  const [barComplete,     setBarComplete]       = useState(false);
 
-  const isResult = result !== null;
-  const isLastQuestion = currentQuestion === quizQuestions.length - 1;
+  const isResult        = result !== null;
+  const isLastQuestion  = currentQuestion === quizQuestions.length - 1;
+  const progress        = barComplete ? 100 : ((currentQuestion + 0.5) / quizQuestions.length) * 100;
 
   const handleAnswer = (value: string, optionIndex: number) => {
     if (selectedOption !== null) return;
@@ -24,13 +25,12 @@ export default function QuizSection() {
       setBarComplete(true);
       setTimeout(() => {
         const newAnswers = [...answers, value];
-        const aCount = newAnswers.filter((a) => a === "a").length;
+        const aCount     = newAnswers.filter((a) => a === "a").length;
         let resultKey: string;
-        if (aCount >= 5) resultKey = "editor";
+        if      (aCount >= 5) resultKey = "editor";
         else if (aCount >= 3) resultKey = "protegee";
         else if (aCount >= 1) resultKey = "itgirl";
-        else resultKey = "visionary";
-
+        else                  resultKey = "visionary";
         setResult(quizResults[resultKey]);
         setSelectedOption(null);
       }, 1000);
@@ -50,213 +50,161 @@ export default function QuizSection() {
     setBarComplete(false);
   };
 
-  return (
-    <div>
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-        className="flex flex-row items-center justify-between"
-        style={{
-          padding: "4px 16px 4px",
-          maxWidth: 768,
-          marginLeft: "auto",
-          marginRight: "auto",
-        }}
-      >
-        <div>
-          <h2
-            className="text-lg sm:text-2xl md:text-xl font-bold text-white tracking-wide"
-            style={{ fontFamily: "var(--font-body)" }}
-          >
-            PICK <span className="text-[var(--color-red)]">YOUR</span> STYLE
-          </h2>
-        </div>
+  const options = [
+    quizQuestions[currentQuestion]?.optionA,
+    quizQuestions[currentQuestion]?.optionB,
+  ];
 
-        <div className="relative w-20 h-14 sm:w-28 sm:h-20 md:w-20 md:h-14 flex-shrink-0">
-          <Image
-            src="/images/movie-logo.svg"
-            alt="The Devil Wears Prada 2"
-            fill
-            className="object-contain"
-          />
+  return (
+    <div className="px-4 pb-6" style={{ maxWidth: 540, marginLeft: "auto", marginRight: "auto" }}>
+
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, delay: 0.1 }}
+        className="flex items-center justify-between py-4 mb-1"
+      >
+        <h2 className="text-sm font-bold text-white tracking-[0.2em]" style={{ fontFamily: "var(--font-body)" }}>
+          PICK <span className="text-[var(--color-red)]">YOUR</span> STYLE
+        </h2>
+        <div className="relative w-16 h-10 flex-shrink-0">
+          <Image src="/images/movie-logo.svg" alt="DWP2" fill className="object-contain" />
         </div>
       </motion.div>
 
-      <div
-        style={{
-          maxWidth: 768,
-          marginLeft: "auto",
-          marginRight: "auto",
-          padding: "0 16px 24px",
-          minHeight: 460,
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <div
-          className="w-full"
-          style={{ flex: 1, display: "flex", flexDirection: "column" }}
-        >
-          <div style={{ marginBottom: 12 }}>
-            <div
-              className="flex items-center justify-between transition-opacity duration-300"
-              style={{ marginBottom: 6, opacity: isResult ? 0 : 1 }}
-            >
-              <span className="tracking-editorial text-white/30 text-[0.5rem]">
-                QUESTION
-              </span>
-              <span className="font-accent text-white text-sm">
-                {currentQuestion + 1}
-                <span className="text-white/30">
-                  {" "}
-                  / {quizQuestions.length}
-                </span>
-              </span>
-            </div>
-            <div className="h-px bg-white/10 relative">
-              <motion.div
-                className="absolute top-0 left-0 h-full bg-[var(--color-red)]"
-                animate={{
-                  width: barComplete
-                    ? "100%"
-                    : `${((currentQuestion + 0.5) / quizQuestions.length) * 100}%`,
-                }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-              />
-            </div>
-          </div>
-
-          <AnimatePresence mode="wait">
-            {!isResult ? (
-              <motion.div
-                key="questions"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
-                style={{ flex: 1 }}
-              >
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={currentQuestion}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.35 }}
-                  >
-                    <h3
-                      className="font-accent text-lg sm:text-xl md:text-2xl text-white text-center"
-                      style={{
-                        paddingTop: 20,
-                        paddingBottom: 20,
-                        minHeight: 100,
-                      }}
-                    >
-                      {quizQuestions[currentQuestion].prompt}
-                    </h3>
-
-                    <div className="grid grid-cols-2" style={{ gap: 16 }}>
-                      {[
-                        quizQuestions[currentQuestion].optionA,
-                        quizQuestions[currentQuestion].optionB,
-                      ].map((option, i) => (
-                        <button
-                          key={i}
-                          onClick={() => handleAnswer(option.value, i)}
-                          className={`quiz-option group text-left border-2 bg-white/[0.02] backdrop-blur-sm cursor-pointer overflow-hidden rounded-xl transition-all duration-300 ${
-                            selectedOption === i
-                              ? "border-white shadow-[0_0_20px_rgba(255,255,255,0.3)]"
-                              : "border-white/10 hover:border-[var(--color-red)]/50"
-                          }`}
-                        >
-                          <div className="relative aspect-[2/3] overflow-hidden">
-                            <motion.div
-                              className="relative w-full h-full"
-                              key={`${currentQuestion}-${i}`}
-                              initial={{ scale: 1.15 }}
-                              animate={{ scale: 1 }}
-                              transition={{
-                                duration: 1.2,
-                                ease: [0.16, 1, 0.3, 1],
-                              }}
-                            >
-                              <Image
-                                src={
-                                  quizOptionImages[currentQuestion]?.[i] ||
-                                  "/images/product-1.png"
-                                }
-                                alt={option.label}
-                                fill
-                                className="object-cover opacity-50 group-hover:opacity-70 group-hover:scale-105 transition-all duration-500"
-                                sizes="(max-width: 768px) 45vw, 350px"
-                              />
-                            </motion.div>
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="result"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{
-                  duration: 0.8,
-                  ease: [0.25, 0.46, 0.45, 0.94],
-                }}
-                style={{
-                  flex: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <div className="flex flex-col items-center text-center">
-                  <div className="relative overflow-hidden rounded-2xl w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 mb-5">
-                    <motion.div
-                      className="relative w-full h-full"
-                      initial={{ scale: 1.1 }}
-                      animate={{ scale: 1 }}
-                      transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-                    >
-                      <Image
-                        src={result.image}
-                        alt={result.name}
-                        fill
-                        className="object-cover object-top"
-                        sizes="256px"
-                      />
-                    </motion.div>
-                  </div>
-
-                  <motion.div
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.3 }}
-                  >
-                    <div className="tracking-editorial text-white/40 text-[0.5rem] mb-2">
-                      YOUR ALTER EGO
-                    </div>
-                    <h3 className="font-accent italic text-2xl sm:text-3xl md:text-4xl text-white leading-[1.1] mb-1">
-                      {result.name}
-                    </h3>
-                    <div className="text-[var(--color-red)] text-xs tracking-[0.15em] uppercase font-bold mb-4">
-                      {result.title}
-                    </div>
-                    <p className="text-white/50 text-xs md:text-sm leading-[1.7] max-w-sm mx-auto mb-5">
-                      {result.description}
-                    </p>
-                  </motion.div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+      {/* Progress */}
+      <div className="mb-5" style={{ opacity: isResult ? 0 : 1, transition: "opacity 0.3s" }}>
+        <div className="h-[1px] bg-white/10 relative overflow-hidden">
+          <motion.div
+            className="absolute top-0 left-0 h-full bg-[var(--color-red)]"
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0.55, ease: "easeOut" }}
+          />
         </div>
       </div>
+
+      {/* Quiz content */}
+      <AnimatePresence mode="wait">
+        {!isResult ? (
+          <motion.div
+            key="questions"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentQuestion}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.3 }}
+              >
+                {/* Question prompt */}
+                <h3 className="font-accent text-center text-white text-[1.3rem] sm:text-2xl leading-[1.35] mb-5 min-h-[3em] flex items-center justify-center px-2">
+                  {quizQuestions[currentQuestion].prompt}
+                </h3>
+
+                {/* Options */}
+                <div className="grid grid-cols-2 gap-3">
+                  {options.map((option, i) => (
+                    <button
+                      key={i}
+                      onClick={() => handleAnswer(option.value, i)}
+                      className={`quiz-option group text-left border bg-white/[0.03] cursor-pointer overflow-hidden transition-all duration-300 ${
+                        selectedOption === i
+                          ? "border-[var(--color-red)] shadow-[0_0_24px_rgba(155,27,48,0.3)]"
+                          : "border-white/10 hover:border-[var(--color-red)]/40"
+                      }`}
+                    >
+                      <div className="relative aspect-[3/4] overflow-hidden">
+                        <motion.div
+                          className="relative w-full h-full"
+                          key={`${currentQuestion}-${i}`}
+                          initial={{ scale: 1.12 }}
+                          animate={{ scale: 1 }}
+                          transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+                        >
+                          <Image
+                            src={quizOptionImages[currentQuestion]?.[i] || "/images/product-1.png"}
+                            alt={option.label}
+                            fill
+                            className="object-cover opacity-80 group-hover:opacity-95 transition-opacity duration-400"
+                            sizes="(max-width: 768px) 45vw, 240px"
+                          />
+                        </motion.div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="result"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
+          >
+            {/* Result */}
+            <div className="flex flex-col items-center text-center pt-2">
+              <div className="relative overflow-hidden w-44 h-44 sm:w-52 sm:h-52 md:w-60 md:h-60 mb-6"
+                   style={{ clipPath: "polygon(0 0, 100% 0, 100% 92%, 50% 100%, 0 92%)" }}>
+                <motion.div
+                  className="relative w-full h-full"
+                  initial={{ scale: 1.1 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 1.3, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <Image
+                    src={result.image}
+                    alt={result.name}
+                    fill
+                    className="object-cover object-top"
+                    sizes="240px"
+                  />
+                </motion.div>
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="mb-6"
+              >
+                <div className="flex items-center justify-center gap-3 mb-3">
+                  <div className="h-px w-6 bg-[var(--color-red)]/50" />
+                  <span className="tracking-editorial text-white/30 text-[0.48rem]">YOUR ALTER EGO</span>
+                  <div className="h-px w-6 bg-[var(--color-red)]/50" />
+                </div>
+                <h3 className="font-accent italic text-[1.8rem] sm:text-[2.2rem] text-white leading-[1.05] mb-1">
+                  {result.name}
+                </h3>
+                <div className="text-[var(--color-red)] text-[0.65rem] tracking-[0.2em] uppercase font-medium mb-4">
+                  {result.title}
+                </div>
+                <p className="text-white/45 text-xs sm:text-sm leading-[1.75] max-w-xs mx-auto mb-6"
+                   style={{ fontFamily: "var(--font-body)" }}>
+                  {result.description}
+                </p>
+                <button
+                  onClick={onWaitlistOpen}
+                  className="inline-flex items-center px-8 py-3 text-white text-[1rem] tracking-[0.18em] uppercase transition-colors duration-300 cursor-pointer rounded-sm"
+                  style={{ fontFamily: "var(--font-body)", background: "var(--color-red)" }}
+                  onMouseEnter={e => (e.currentTarget.style.background = "var(--color-deep-red)")}
+                  onMouseLeave={e => (e.currentTarget.style.background = "var(--color-red)")}
+                >
+                  Join the Waitlist
+                </button>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

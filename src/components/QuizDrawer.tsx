@@ -7,9 +7,11 @@ import QuizSection from "./QuizSection";
 export default function QuizDrawer({
   isOpen,
   onClose,
+  onWaitlistOpen,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  onWaitlistOpen: () => void;
 }) {
   useEffect(() => {
     if (isOpen) {
@@ -82,7 +84,7 @@ export default function QuizDrawer({
               </div>
 
               <div className="flex-1 overflow-y-auto overscroll-contain">
-                <QuizSection />
+                <QuizSection onWaitlistOpen={() => { onClose(); onWaitlistOpen(); }} />
               </div>
             </motion.div>
           </div>
@@ -127,7 +129,7 @@ export default function QuizDrawer({
                 }}
               >
                 <div className="flex-1 overflow-y-auto overscroll-contain">
-                  <QuizSection />
+                  <QuizSection onWaitlistOpen={() => { onClose(); onWaitlistOpen(); }} />
                 </div>
               </motion.div>
             </div>

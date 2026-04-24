@@ -6,8 +6,10 @@ import HeroSection from "@/components/HeroSection";
 import MagazineSection from "@/components/MagazineSection";
 import MoodboardSection from "@/components/MoodboardSection";
 import StorySection from "@/components/StorySection";
+import DevilApprovedSection from "@/components/DevilApprovedSection";
 import ProductGrid from "@/components/ProductGrid";
-import QuizCTA from "@/components/QuizCTA";
+import WaitlistSection from "@/components/WaitlistSection";
+import WaitlistModal from "@/components/WaitlistModal";
 import QuizDrawer from "@/components/QuizDrawer";
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -19,16 +21,20 @@ const fadeUp = {
 
 export default function Home() {
   const [quizOpen, setQuizOpen] = useState(false);
+  const [waitlistOpen, setWaitlistOpen] = useState(false);
+  const openWaitlist = () => setWaitlistOpen(true);
 
   return (
     <main>
       {/* Hero — full-bleed video, no padding needed */}
-      <HeroSection />
+      <HeroSection onWaitlistOpen={openWaitlist} />
+
+      <DevilApprovedSection />
 
       {/* Magazine — scroll-driven, manages its own sticky + scroll runway */}
-      <MagazineSection />
+      <MagazineSection onWaitlistOpen={openWaitlist} />
 
-      <StorySection />
+      <StorySection onQuizOpen={() => setQuizOpen(true)} />
 
       <motion.div
         initial="hidden"
@@ -40,8 +46,6 @@ export default function Home() {
         <MoodboardSection />
       </motion.div>
 
-      <QuizCTA onOpen={() => setQuizOpen(true)} />
-
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -51,6 +55,8 @@ export default function Home() {
       >
         <ProductGrid />
       </motion.div>
+
+      <WaitlistSection onOpen={openWaitlist} />
 
       {/* Footer */}
       <motion.footer
@@ -115,21 +121,20 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Waitlist */}
+            {/* Legal */}
             <div>
               <div className="tracking-editorial text-white/20 text-[0.6rem] mb-4">
-                JOIN THE WAITLIST
+                LEGAL
               </div>
-              <div className="flex">
-                <input
-                  type="email"
-                  placeholder="your@email.com"
-                  className="flex-1 bg-transparent border-b border-white/10 text-white text-sm py-2 pr-4 outline-none focus:border-[var(--color-red)] transition-colors placeholder:text-white/20"
-                />
-                <button className="text-[var(--color-red)] text-sm tracking-[0.1em] uppercase ml-4 cursor-pointer hover:text-white transition-colors">
-                  →
-                </button>
-              </div>
+              <ul className="space-y-2">
+                {["Privacy Policy", "Terms of Service", "Cookie Policy"].map((item) => (
+                  <li key={item}>
+                    <span className="text-white/40 text-sm hover:text-white transition-colors cursor-pointer pb-0.5">
+                      {item}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
 
@@ -144,7 +149,8 @@ export default function Home() {
           </div>
         </div>
       </motion.footer>
-      <QuizDrawer isOpen={quizOpen} onClose={() => setQuizOpen(false)} />
+      <QuizDrawer isOpen={quizOpen} onClose={() => setQuizOpen(false)} onWaitlistOpen={openWaitlist} />
+      <WaitlistModal isOpen={waitlistOpen} onClose={() => setWaitlistOpen(false)} />
     </main>
   );
 }
