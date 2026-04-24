@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { quizQuestions, quizResults, type QuizResult } from "@/data/quiz";
 import { quizOptionImages } from "@/data/images";
 
-export default function QuizSection() {
+export default function QuizSection({ onWaitlistOpen }: { onWaitlistOpen: () => void }) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers,         setAnswers]          = useState<string[]>([]);
   const [result,          setResult]           = useState<QuizResult | null>(null);
@@ -192,10 +192,13 @@ export default function QuizSection() {
                   {result.description}
                 </p>
                 <button
-                  onClick={resetQuiz}
-                  className="text-white/30 text-[0.65rem] tracking-[0.18em] uppercase hover:text-white/60 transition-colors duration-300 cursor-pointer border-b border-white/15 hover:border-white/40 pb-0.5"
+                  onClick={onWaitlistOpen}
+                  className="inline-flex items-center px-8 py-3 text-white text-[1rem] tracking-[0.18em] uppercase transition-colors duration-300 cursor-pointer rounded-sm"
+                  style={{ fontFamily: "var(--font-body)", background: "var(--color-red)" }}
+                  onMouseEnter={e => (e.currentTarget.style.background = "var(--color-deep-red)")}
+                  onMouseLeave={e => (e.currentTarget.style.background = "var(--color-red)")}
                 >
-                  Retake Quiz
+                  Join the Waitlist
                 </button>
               </motion.div>
             </div>

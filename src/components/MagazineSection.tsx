@@ -15,7 +15,7 @@ const FLIP_FWD: any  = { type: "tween", duration: 0.68, ease: [0.4, 0, 0.2, 1] }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const FLIP_BACK: any = { type: "tween", duration: 0.68, ease: [0.4, 0, 0.2, 1] };
 
-export default function MagazineSection() {
+export default function MagazineSection({ onWaitlistOpen }: { onWaitlistOpen: () => void }) {
   const sectionRef    = useRef<HTMLDivElement>(null);
   const stageRef      = useRef<0 | 1 | 2>(0);
   const coverShownRef = useRef(false);
@@ -332,6 +332,17 @@ export default function MagazineSection() {
 
             </motion.div>
           </div>
+        </div>
+
+        {/* Small waitlist CTA under the book */}
+        <div className="mt-6 md:mt-8 z-[70]">
+          <button
+            onClick={onWaitlistOpen}
+            className="group inline-flex items-center gap-3 px-8 py-3 text-white text-[1rem] tracking-[0.15em] uppercase hover:bg-[var(--color-deep-red)] transition-all duration-300 cursor-pointer rounded-sm"
+            style={{ background: "var(--color-red)", fontFamily: "var(--font-body)" }}
+          >
+            Join the waitlist
+          </button>
         </div>
 
       </div>

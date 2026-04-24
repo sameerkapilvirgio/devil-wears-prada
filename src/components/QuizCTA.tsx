@@ -48,16 +48,12 @@ export default function QuizCTA({ onOpen }: { onOpen: () => void }) {
 
           <button
             onClick={onOpen}
-            className="group inline-flex items-center gap-3 px-10 py-4 text-white tracking-[0.18em] uppercase text-[0.68rem] cursor-pointer transition-colors duration-300 rounded-sm"
+            className="group inline-flex items-center gap-3 px-10 py-4 text-white tracking-[0.18em] uppercase text-[1rem] cursor-pointer transition-colors duration-300 rounded-sm"
             style={{ fontFamily: "var(--font-body)", background: "var(--color-red)" }}
             onMouseEnter={e => (e.currentTarget.style.background = "var(--color-deep-red)")}
             onMouseLeave={e => (e.currentTarget.style.background = "var(--color-red)")}
           >
             Take the Quiz
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-              className="group-hover:translate-x-1.5 transition-transform duration-300">
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
           </button>
         </div>
       </motion.div>

@@ -4,7 +4,7 @@ import { useRef } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 
-export default function HeroSection() {
+export default function HeroSection({ onWaitlistOpen }: { onWaitlistOpen: () => void }) {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll({
@@ -57,17 +57,14 @@ export default function HeroSection() {
         </motion.p>
 
         <motion.button
-          className="group inline-flex items-center gap-2.5 border border-white/35 px-8 py-3 text-white text-[0.65rem] tracking-[0.22em] uppercase mt-2 hover:bg-white hover:text-black transition-all duration-300 cursor-pointer rounded-sm"
+          onClick={onWaitlistOpen}
+          className="group inline-flex items-center gap-2.5 bg-[var(--color-red)] border border-[var(--color-red)] px-8 py-3 text-white text-[1rem] tracking-[0.22em] uppercase mt-2 hover:bg-[var(--color-deep-red)] hover:border-[var(--color-deep-red)] transition-all duration-500 ease-out cursor-pointer rounded-sm"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 1.05 }}
           style={{ fontFamily: "var(--font-body)" }}
         >
-          Get Notified
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-            className="group-hover:translate-x-0.5 transition-transform duration-300">
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg>
+          Join the Waitlist
         </motion.button>
       </div>
 

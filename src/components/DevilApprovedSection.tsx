@@ -44,10 +44,10 @@ export default function DevilApprovedSection() {
               style={{ y: imageY }}
             >
               <Image
-                src="/images/miranda.png"
-                alt="Miranda Priestly — Devil Approved"
-                width={600}
-                height={700}
+                src="/images/group.png"
+                alt="Devil Approved"
+                width={1200}
+                height={1400}
                 className="w-full h-auto drop-shadow-[0_20px_60px_rgba(0,0,0,0.15)]"
               />
             </motion.div>
@@ -106,7 +106,7 @@ export default function DevilApprovedSection() {
                     </div>
                     <div
                       className="font-accent text-[1.6rem] sm:text-[2rem] md:text-[2.6rem] lg:text-[3rem] text-white leading-none"
-                      style={{ fontStyle: stat.label === "DROPS" ? "italic" : "normal" }}
+                      style={{ fontStyle: "italic" }}
                     >
                       {stat.value}
                     </div>
