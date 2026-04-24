@@ -10,8 +10,10 @@ const S1_RIGHT = "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w
 const S2_LEFT  = "https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=800&h=1000&fit=crop&crop=top";
 const S2_RIGHT = "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800&h=1000&fit=crop&crop=top";
 
-const FLIP_FWD  = { type: "tween" as const, duration: 0.68, ease: [0.4, 0, 0.2, 1] as number[] };
-const FLIP_BACK = { type: "tween" as const, duration: 0.68, ease: [0.4, 0, 0.2, 1] as number[] };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const FLIP_FWD: any  = { type: "tween", duration: 0.68, ease: [0.4, 0, 0.2, 1] };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const FLIP_BACK: any = { type: "tween", duration: 0.68, ease: [0.4, 0, 0.2, 1] };
 
 export default function MagazineSection() {
   const sectionRef    = useRef<HTMLDivElement>(null);
@@ -25,6 +27,9 @@ export default function MagazineSection() {
 
   // Cover slides in once magazine is sticky (centered in viewport)
   const coverSlideX = useTransform(scrollYProgress, [0.36, 0.44], ["-28%", "0%"]);
+
+  // Gradual background transition from dark to beige as user scrolls
+  const sectionBg = useTransform(scrollYProgress, [0.4, 0.7], ["#0a0a0a", "#faf8f4"]);
 
   // All flip state as motion values
   const coverOpacity    = useMotionValue(0);
@@ -103,35 +108,31 @@ export default function MagazineSection() {
         }, 620);
       }
 
-      // ── Flip 2 forward: spread 1 → single last page centered ──
+      // ── Flip 2 forward: spread 1 → spread 2 (stays open) ──
       else if (v > 0.58 && stage === 1) {
         stageRef.current = 2;
         animate(s2RightOpacity, 1, { duration: 0.15 });
+        animate(s1RightHide,    0, { duration: 0.15 });
         animate(f2Visible,      1, { duration: 0.05 });
         animate(f2FrontRot, -180, FLIP_FWD);
         animate(f2BackRot,     0, FLIP_FWD);
         animate(f2Scale,  [1, 1.04, 1], { duration: 0.68, ease: "easeInOut" });
         animate(f2Shadow, [0, 0.35, 0], { duration: 0.68, ease: "easeInOut" });
         setTimeout(() => {
-          // Contract back to single centered page
-          animate(containerX, "-25%", { type: "tween", duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] });
-          animate(spineOpacity,  0, { duration: 0.2 });
-          animate(s1RightHide,   0, { duration: 0.2 });
+          animate(s2LeftOpacity, 1, { duration: 0.2 });
           animate(s1LeftHide,    0, { duration: 0.2 });
-          animate(f2Visible,     0, { duration: 0.25 });
-          // s2RightOpacity stays 1 — centered at right half when containerX = -25%
-        }, 620);
+        }, 500);
+        setTimeout(() => {
+          animate(f2Visible, 0, { duration: 0.15 });
+        }, 720);
       }
 
-      // ── Flip 2 back: single last page → spread 1 ──
+      // ── Flip 2 back: spread 2 → spread 1 ──
       else if (v < 0.50 && stage === 2) {
         stageRef.current = 1;
-        // Expand back to full spread first
-        animate(containerX, "0%", { type: "tween", duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] });
-        animate(s1LeftOpacity, 1, { duration: 0.3 });
-        animate(s1RightHide,   1, { duration: 0.3 });
-        animate(s1LeftHide,    1, { duration: 0.3 });
-        animate(spineOpacity,  1, { duration: 0.3 });
+        animate(s2LeftOpacity, 0, { duration: 0.15 });
+        animate(s1LeftHide,    1, { duration: 0.25 });
+        animate(s1RightHide,   1, { duration: 0.25 });
         animate(f2Visible,     1, { duration: 0.05 });
         animate(f2FrontRot,    0, FLIP_BACK);
         animate(f2BackRot,   180, FLIP_BACK);
@@ -146,12 +147,34 @@ export default function MagazineSection() {
   }, [scrollYProgress]);
 
   return (
-    <section
+    <motion.section
       ref={sectionRef}
       className="relative"
-      style={{ background: "#0a0a0a" }}
+      style={{ background: sectionBg }}
     >
       <div className="sticky top-0 z-10 h-screen flex flex-col items-center justify-center py-[1vh]">
+        {/* Keep scrolling hint — above the book */}
+        <div className="flex flex-col items-center gap-2 mb-10 md:mb-14 z-[70]">
+          <span className="tracking-editorial text-[var(--color-red)] text-[0.55rem] md:text-[0.6rem]">
+            KEEP SCROLLING
+          </span>
+          <div className="flex items-center gap-3">
+            {[0, 0.15, 0.3].map((delay) => (
+              <motion.svg
+                key={delay}
+                width="16" height="16" viewBox="0 0 16 16"
+                fill="none" stroke="var(--color-red)" strokeWidth="1.5"
+                strokeLinecap="round" strokeLinejoin="round"
+                animate={{ y: [4, -2, 4] }}
+                transition={{ duration: 1.5, delay, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <path d="M8 12V4" />
+                <path d="M4 6l4-4 4 4" />
+              </motion.svg>
+            ))}
+          </div>
+        </div>
+
         <div className="w-full px-4 md:px-[60px]" style={{ maxWidth: 1100 }}>
           <div className="w-full mx-auto" style={{ maxWidth: 768 }}>
             <motion.div
@@ -159,7 +182,22 @@ export default function MagazineSection() {
               style={{ perspective: 2500, x: containerX }}
             >
 
-              {/* ── SPREAD 1 ── */}
+              {/* ── SPREAD 2 (behind S1 in DOM order) ── */}
+              <motion.div
+                className="absolute top-0 right-0 w-1/2 h-full rounded-r-sm overflow-hidden"
+                style={{ opacity: s2RightOpacity }}
+              >
+                <Image src={S2_RIGHT} alt="Spread 2 right" fill className="object-cover" sizes="(max-width:768px) 50vw,384px" />
+              </motion.div>
+
+              <motion.div
+                className="absolute top-0 left-0 w-1/2 h-full rounded-l-sm overflow-hidden"
+                style={{ opacity: s2LeftOpacity }}
+              >
+                <Image src={S2_LEFT} alt="Spread 2 left" fill className="object-cover" sizes="(max-width:768px) 50vw,384px" />
+              </motion.div>
+
+              {/* ── SPREAD 1 (on top of S2 in DOM order) ── */}
               <motion.div
                 className="absolute top-0 right-0 w-1/2 h-full rounded-r-sm overflow-hidden"
                 style={{ opacity: s1RightOpacity }}
@@ -176,21 +214,6 @@ export default function MagazineSection() {
                 <motion.div className="absolute inset-0" style={{ opacity: s1LeftHide }}>
                   <Image src={S1_LEFT} alt="Spread 1 left" fill className="object-cover" sizes="(max-width:768px) 50vw,384px" />
                 </motion.div>
-              </motion.div>
-
-              {/* ── SPREAD 2 ── */}
-              <motion.div
-                className="absolute top-0 right-0 w-1/2 h-full rounded-r-sm overflow-hidden"
-                style={{ opacity: s2RightOpacity }}
-              >
-                <Image src={S2_RIGHT} alt="Spread 2 right" fill className="object-cover" sizes="(max-width:768px) 50vw,384px" />
-              </motion.div>
-
-              <motion.div
-                className="absolute top-0 left-0 w-1/2 h-full rounded-l-sm overflow-hidden z-[6]"
-                style={{ opacity: s2LeftOpacity }}
-              >
-                <Image src={S2_LEFT} alt="Spread 2 left" fill className="object-cover" sizes="(max-width:768px) 50vw,384px" />
               </motion.div>
 
               {/* ── SPINE ── */}
@@ -306,35 +329,15 @@ export default function MagazineSection() {
                 </motion.div>
               </motion.div>
 
-              {/* Keep scrolling hint */}
-              <div className="absolute -bottom-16 md:-bottom-20 left-0 right-0 flex flex-col items-center gap-2 z-[70]">
-                <span className="tracking-editorial text-white/25 text-[0.55rem] md:text-[0.6rem]">
-                  KEEP SCROLLING
-                </span>
-                <div className="flex items-center gap-3">
-                  {[0, 0.15, 0.3].map((delay) => (
-                    <motion.svg
-                      key={delay}
-                      width="16" height="16" viewBox="0 0 16 16"
-                      fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5"
-                      strokeLinecap="round" strokeLinejoin="round"
-                      animate={{ y: [4, -2, 4] }}
-                      transition={{ duration: 1.5, delay, repeat: Infinity, ease: "easeInOut" }}
-                    >
-                      <path d="M8 12V4" />
-                      <path d="M4 6l4-4 4 4" />
-                    </motion.svg>
-                  ))}
-                </div>
-              </div>
 
             </motion.div>
           </div>
         </div>
+
       </div>
 
-      {/* Scroll runway — holds last page visible, fades into next section */}
-      <div style={{ height: "80vh", background: "linear-gradient(to bottom, #0a0a0a 30%, var(--color-beige) 100%)" }} aria-hidden />
-    </section>
+      {/* Scroll runway — holds last page visible while bg transitions */}
+      <div style={{ height: "80vh" }} aria-hidden />
+    </motion.section>
   );
 }

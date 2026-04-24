@@ -6,8 +6,8 @@ import HeroSection from "@/components/HeroSection";
 import MagazineSection from "@/components/MagazineSection";
 import MoodboardSection from "@/components/MoodboardSection";
 import StorySection from "@/components/StorySection";
+import DevilApprovedSection from "@/components/DevilApprovedSection";
 import ProductGrid from "@/components/ProductGrid";
-import QuizCTA from "@/components/QuizCTA";
 import QuizDrawer from "@/components/QuizDrawer";
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -25,10 +25,12 @@ export default function Home() {
       {/* Hero — full-bleed video, no padding needed */}
       <HeroSection />
 
+      <DevilApprovedSection />
+
       {/* Magazine — scroll-driven, manages its own sticky + scroll runway */}
       <MagazineSection />
 
-      <StorySection />
+      <StorySection onQuizOpen={() => setQuizOpen(true)} />
 
       <motion.div
         initial="hidden"
@@ -39,8 +41,6 @@ export default function Home() {
       >
         <MoodboardSection />
       </motion.div>
-
-      <QuizCTA onOpen={() => setQuizOpen(true)} />
 
       <motion.div
         initial="hidden"

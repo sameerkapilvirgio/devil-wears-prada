@@ -35,16 +35,6 @@ export default function HeroSection() {
         background: "linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.05) 25%, rgba(0,0,0,0.35) 60%, rgba(0,0,0,0.92) 88%, #0a0a0a 100%)",
       }} />
 
-      {/* Virgio logo — top center */}
-      <motion.div
-        className="absolute top-[5vh] left-0 right-0 z-10 flex justify-center"
-        initial={{ opacity: 0, y: -12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.3 }}
-      >
-        <Image src="/images/virgio-logo.svg" alt="Virgio" width={80} height={32} className="w-14 md:w-18 h-auto" />
-      </motion.div>
-
       {/* Movie logo + tagline + CTA — bottom half */}
       <div className="relative z-10 h-full flex flex-col items-center justify-end pb-[7vh] md:pb-[10vh] gap-3 px-6">
         <motion.div

@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 export default function QuizCTA({ onOpen }: { onOpen: () => void }) {
   return (
-    <section className="relative py-14 md:py-20 px-5 md:px-12" style={{ background: "var(--color-cream)" }}>
+    <section className="relative py-14 md:py-20 px-5 md:px-12" style={{ background: "#faf8f4" }}>
       {/* Banner card */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -32,12 +32,6 @@ export default function QuizCTA({ onOpen }: { onOpen: () => void }) {
         />
 
         <div className="relative z-10 py-16 md:py-20 px-8 md:px-16 text-center">
-          <div className="flex items-center justify-center gap-3 mb-7">
-            <div className="h-px w-8 bg-[var(--color-red)]/40" />
-            <span className="tracking-editorial text-white/25 text-[0.58rem]">DISCOVER YOUR ALTER EGO</span>
-            <div className="h-px w-8 bg-[var(--color-red)]/40" />
-          </div>
-
           <h2 className="font-accent italic text-[clamp(2.2rem,6.5vw,3.8rem)] text-white leading-[1.05] mb-5">
             Which runway icon
             <br className="hidden sm:block" /> lives{" "}

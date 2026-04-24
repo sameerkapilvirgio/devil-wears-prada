@@ -157,13 +157,13 @@ export default function MoodboardSection() {
     offset: ["start end", "end start"],
   });
 
-  const springConfig = { stiffness: 200, damping: 50, mass: 0.3 };
+  const springConfig = { stiffness: 300, damping: 40, mass: 0.2 };
 
-  const y1raw = useTransform(scrollYProgress, [0, 1], [8, -8]);
-  const y2raw = useTransform(scrollYProgress, [0, 1], [18, -18]);
-  const y3raw = useTransform(scrollYProgress, [0, 1], [35, -35]);
-  const y4raw = useTransform(scrollYProgress, [0, 1], [15, -15]);
-  const y5raw = useTransform(scrollYProgress, [0, 1], [45, -45]);
+  const y1raw = useTransform(scrollYProgress, [0, 1], [20, -20]);
+  const y2raw = useTransform(scrollYProgress, [0, 1], [50, -50]);
+  const y3raw = useTransform(scrollYProgress, [0, 1], [90, -90]);
+  const y4raw = useTransform(scrollYProgress, [0, 1], [120, -120]);
+  const y5raw = useTransform(scrollYProgress, [0, 1], [150, -150]);
 
   const y1 = useSpring(y1raw, springConfig);
   const y2 = useSpring(y2raw, springConfig);
@@ -183,7 +183,7 @@ export default function MoodboardSection() {
     <section
       ref={sectionRef}
       className="relative overflow-hidden md:pb-20 lg:pb-32"
-      style={{ background: "var(--color-cream)" }}
+      style={{ background: "#faf8f4" }}
     >
       <div style={{ maxWidth: 1400, margin: "0 auto" }}>
         {/* ── Parallax moodboard ── */}

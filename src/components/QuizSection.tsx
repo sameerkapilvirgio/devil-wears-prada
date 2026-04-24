@@ -75,12 +75,6 @@ export default function QuizSection() {
 
       {/* Progress */}
       <div className="mb-5" style={{ opacity: isResult ? 0 : 1, transition: "opacity 0.3s" }}>
-        <div className="flex items-center justify-between mb-2">
-          <span className="tracking-editorial text-white/25 text-[0.48rem]">QUESTION</span>
-          <span className="font-accent text-white/70 text-xs">
-            {currentQuestion + 1}<span className="text-white/25"> / {quizQuestions.length}</span>
-          </span>
-        </div>
         <div className="h-[1px] bg-white/10 relative overflow-hidden">
           <motion.div
             className="absolute top-0 left-0 h-full bg-[var(--color-red)]"
@@ -109,7 +103,7 @@ export default function QuizSection() {
                 transition={{ duration: 0.3 }}
               >
                 {/* Question prompt */}
-                <h3 className="font-accent text-center text-white text-[1.05rem] sm:text-xl leading-[1.35] mb-5 min-h-[3em] flex items-center justify-center px-2">
+                <h3 className="font-accent text-center text-white text-[1.3rem] sm:text-2xl leading-[1.35] mb-5 min-h-[3em] flex items-center justify-center px-2">
                   {quizQuestions[currentQuestion].prompt}
                 </h3>
 
@@ -137,17 +131,11 @@ export default function QuizSection() {
                             src={quizOptionImages[currentQuestion]?.[i] || "/images/product-1.png"}
                             alt={option.label}
                             fill
-                            className="object-cover opacity-55 group-hover:opacity-75 transition-opacity duration-400"
+                            className="object-cover opacity-80 group-hover:opacity-95 transition-opacity duration-400"
                             sizes="(max-width: 768px) 45vw, 240px"
                           />
                         </motion.div>
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-                        {/* Label always visible */}
-                        <div className="absolute bottom-0 left-0 right-0 p-3">
-                          <div className="font-accent italic text-white text-[0.85rem] leading-tight">
-                            {option.label}
-                          </div>
-                        </div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                       </div>
                     </button>
                   ))}
@@ -199,7 +187,7 @@ export default function QuizSection() {
                 <div className="text-[var(--color-red)] text-[0.65rem] tracking-[0.2em] uppercase font-medium mb-4">
                   {result.title}
                 </div>
-                <p className="text-white/45 text-xs sm:text-[0.82rem] leading-[1.75] max-w-xs mx-auto mb-6"
+                <p className="text-white/45 text-xs sm:text-sm leading-[1.75] max-w-xs mx-auto mb-6"
                    style={{ fontFamily: "var(--font-body)" }}>
                   {result.description}
                 </p>
