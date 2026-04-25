@@ -29,7 +29,7 @@ export default function WaitlistSection({ onOpen }: { onOpen: () => void }) {
 
         <button
           onClick={onOpen}
-          className="group inline-flex items-center gap-2.5 px-10 py-3.5 text-white text-[1rem] tracking-[0.18em] uppercase hover:bg-[var(--color-deep-red)] transition-all duration-300 cursor-pointer rounded-sm"
+          className="group inline-flex items-center gap-2.5 px-10 py-3.5 text-white text-[1rem] tracking-[0.18em] uppercase hover:bg-[var(--color-deep-red)] transition-all duration-300 cursor-pointer rounded-xl"
           style={{ background: "var(--color-red)", fontFamily: "var(--font-body)" }}
         >
           Join the Waitlist

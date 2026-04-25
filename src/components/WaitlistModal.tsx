@@ -89,7 +89,7 @@ export default function WaitlistModal({ isOpen, onClose }: { isOpen: boolean; on
 
                   <button
                     type="submit"
-                    className="group w-full inline-flex items-center justify-center gap-2 bg-white/95 py-3.5 text-black text-[0.6rem] tracking-[0.18em] uppercase hover:bg-white/10 hover:text-white transition-all duration-500 cursor-pointer rounded-sm mt-3"
+                    className="group w-full inline-flex items-center justify-center gap-2 bg-white/95 py-3.5 text-black text-[0.6rem] tracking-[0.18em] uppercase hover:bg-white/10 hover:text-white transition-all duration-500 cursor-pointer rounded-xl mt-3"
                     style={{ fontFamily: "var(--font-body)" }}
                   >
                     Submit

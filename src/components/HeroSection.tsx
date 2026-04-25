@@ -58,7 +58,7 @@ export default function HeroSection({ onWaitlistOpen }: { onWaitlistOpen: () => 
 
         <motion.button
           onClick={onWaitlistOpen}
-          className="group inline-flex items-center gap-2.5 bg-[var(--color-red)] border border-[var(--color-red)] px-8 py-3 text-white text-[1rem] tracking-[0.22em] uppercase mt-2 hover:bg-[var(--color-deep-red)] hover:border-[var(--color-deep-red)] transition-all duration-500 ease-out cursor-pointer rounded-sm"
+          className="group inline-flex items-center gap-2.5 bg-[var(--color-red)] border border-[var(--color-red)] px-8 py-3 text-white text-[1rem] tracking-[0.22em] uppercase mt-2 hover:bg-[var(--color-deep-red)] hover:border-[var(--color-deep-red)] transition-all duration-500 ease-out cursor-pointer rounded-xl"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 1.05 }}

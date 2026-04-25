@@ -338,7 +338,7 @@ export default function MagazineSection({ onWaitlistOpen }: { onWaitlistOpen: ()
         <div className="mt-6 md:mt-8 z-[70]">
           <button
             onClick={onWaitlistOpen}
-            className="group inline-flex items-center gap-3 px-8 py-3 text-white text-[1rem] tracking-[0.15em] uppercase hover:bg-[var(--color-deep-red)] transition-all duration-300 cursor-pointer rounded-sm"
+            className="group inline-flex items-center gap-3 px-8 py-3 text-white text-[1rem] tracking-[0.15em] uppercase hover:bg-[var(--color-deep-red)] transition-all duration-300 cursor-pointer rounded-xl"
             style={{ background: "var(--color-red)", fontFamily: "var(--font-body)" }}
           >
             Join the waitlist

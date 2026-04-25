@@ -48,7 +48,7 @@ export default function QuizCTA({ onOpen }: { onOpen: () => void }) {
 
           <button
             onClick={onOpen}
-            className="group inline-flex items-center gap-3 px-10 py-4 text-white tracking-[0.18em] uppercase text-[1rem] cursor-pointer transition-colors duration-300 rounded-sm"
+            className="group inline-flex items-center gap-3 px-10 py-4 text-white tracking-[0.18em] uppercase text-[1rem] cursor-pointer transition-colors duration-300 rounded-xl"
             style={{ fontFamily: "var(--font-body)", background: "var(--color-red)" }}
             onMouseEnter={e => (e.currentTarget.style.background = "var(--color-deep-red)")}
             onMouseLeave={e => (e.currentTarget.style.background = "var(--color-red)")}

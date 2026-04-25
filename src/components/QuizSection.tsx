@@ -193,7 +193,7 @@ export default function QuizSection({ onWaitlistOpen }: { onWaitlistOpen: () => 
                 </p>
                 <button
                   onClick={onWaitlistOpen}
-                  className="inline-flex items-center px-8 py-3 text-white text-[1rem] tracking-[0.18em] uppercase transition-colors duration-300 cursor-pointer rounded-sm"
+                  className="inline-flex items-center px-8 py-3 text-white text-[1rem] tracking-[0.18em] uppercase transition-colors duration-300 cursor-pointer rounded-xl"
                   style={{ fontFamily: "var(--font-body)", background: "var(--color-red)" }}
                   onMouseEnter={e => (e.currentTarget.style.background = "var(--color-deep-red)")}
                   onMouseLeave={e => (e.currentTarget.style.background = "var(--color-red)")}
